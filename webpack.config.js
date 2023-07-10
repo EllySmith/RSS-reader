@@ -8,7 +8,7 @@ const isProduction = process.env.NODE_ENV == "production";
 const stylesHandler = "style-loader";
 
 const config = {
-  entry: "./src/index.js",
+  entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, "dist"),
   },
@@ -27,6 +27,10 @@ const config = {
         loader: "babel-loader",
       },
       {
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader', 'postcss-loader'],
+      },
+      {
         test: /\.css$/i,
         use: [stylesHandler, "css-loader"],
       },
@@ -38,6 +42,10 @@ const config = {
       // Add your rules for custom modules here
       // Learn more about loaders from https://webpack.js.org/loaders/
     ],
+  },
+  devServer: {
+    open: true,
+    host: 'localhost',
   },
 };
 
