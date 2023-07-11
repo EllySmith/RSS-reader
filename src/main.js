@@ -4,12 +4,12 @@ import * as yup from 'yup';
 
 const state = {
   articleCount: 0,
-  articleTitles:
+  articles:
      [],
 };
 
 const app = () => {
-  const field = document.getElementById("link-input");
+  const field = document.getElementById('link-input');
   field.focus();
   field.addEventListener('input', () => {
     const inputElement = document.getElementById('link-input');
@@ -17,23 +17,32 @@ const app = () => {
       rssLink: yup.string().url().required(),
     });
     const rssLink = inputElement.value.trim();
-
     validationSchema.validate({ rssLink }).then(() => {
       inputElement.classList.remove('invalid');
     }).catch(() => {
       inputElement.classList.add('invalid');
     });
+  });
 
-    const form = document.getElementById('input-form');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const result = inputElement.value;
-      const newElement = document.createElement('p');
-      newElement.textContent = `${result}`;
-      const container = document.querySelector('body');
-      container.append(newElement);
-      field.value = '';
-    });
+  const form = document.getElementById('input-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const inputElement = document.getElementById('link-input');
+    const result = inputElement.value;
+    const newElement = document.createElement('p');
+    newElement.textContent = `${result}`;
+    const container = document.querySelector('body');
+
+    const existingArticle = state.articles.find((article) => article.title === result);
+    if (existingArticle) {
+      inputElement.classList.add('invalid');
+      return;
+    }
+
+    container.append(newElement);
+    state.articles.push({ title: `${result}`, body: '' });
+    inputElement.value = '';
+    console.log(state);
   });
 };
 
