@@ -31,14 +31,17 @@ const app = () => {
     field.focus();
     field.addEventListener('input', () => {
       const inputElement = document.getElementById('link-input');
+      const button = document.getElementById('submit-button');
       const validationSchema = yup.object().shape({
         rssLink: yup.string().url().required(),
       });
       const rssLink = inputElement.value.trim();
       validationSchema.validate({ rssLink }).then(() => {
         inputElement.classList.remove('invalid');
+        button.disabled = false;
       }).catch(() => {
         inputElement.classList.add('invalid');
+        button.disabled = true;
       });
     });
 
@@ -62,12 +65,25 @@ const app = () => {
       const existingArticle = state.articles.find((article) => article.title === result);
       if (existingArticle) {
         inputElement.classList.add('invalid');
+        const button = document.getElementById('submit-button');
+        button.disabled = true;
         return;
       }
 
       container.append(newElement);
-      state.articles.push({ title: `${result}`, body: '' });
-      inputElement.value = '';
+      let articlename = '';
+      fetch(result)
+        .then((response) => response.text())
+        .then((text) => {
+          articlename = text;
+          console.log('Page title:', articlename);
+
+          state.articles.push({ title: `${result}`, body: '', header: `${articlename}` });
+          inputElement.value = '';
+        })
+        .catch((error) => {
+          console.log('Error:', error);
+        });
     });
   };
 

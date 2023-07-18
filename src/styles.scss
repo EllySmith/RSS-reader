@@ -40,6 +40,12 @@ button[type="submit"]:hover {
   background-color: #0056b3;
 }
 
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  color: #ccc;
+}
+
 .link-container {
   background-color: #0a3360;
   padding: 10px 20px;
