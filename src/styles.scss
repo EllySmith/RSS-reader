@@ -28,7 +28,8 @@ input[type="text"].invalid {
 }
 
 button[type="submit"] {
-  padding: 10px 20px;
+  margin: 30px;
+  padding: 10px;
   background-color: #007bff;
   color: #fff;
   border: none;
@@ -47,16 +48,22 @@ button:disabled {
 }
 
 .link-container {
-  background-color: #0a3360;
-  padding: 10px 20px;
-  border: solid double;
+  background: linear-gradient(to bottom, #003366, #000044);
+  color: #fff;
+  padding: 20px;
+  margin: 20px;
   border-radius: 10px;
-  font-size: 50px;
-  font-weight: 300;
-  margin: 10px;
-  color: white;
-  vertical-align:text-bottom;
-  width: 1000px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);  
+}
+
+.link-container .title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.link-container .link {
+  font-size: 16px;
 }
 
 @media only screen and (max-width: 600px) {
