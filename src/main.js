@@ -2,13 +2,14 @@ import './styles.scss';
 import 'bootstrap';
 import * as yup from 'yup';
 import i18n from 'i18next';
+import Parser from 'rss-parser';
 import axios from 'axios';
 import rus from './locales/rus.js';
 
 const app = async () => {
   const state = {
     articleCount: 0,
-    articles:
+    feeds:
        [],
   };
 
@@ -71,7 +72,7 @@ const app = async () => {
       e.preventDefault();
       const inputElement = document.getElementById('link-input');
       const rssLink = inputElement.value;
-      const existingArticle = state.articles.find((article) => article.link === rssLink);
+      const existingArticle = state.feeds.find((feed) => feed.link === rssLink);
       if (existingArticle) {
         inputElement.classList.add('invalid');
         button.disabled = true;
@@ -79,15 +80,20 @@ const app = async () => {
         return;
       }
 
-      const fetchData = async (link) => {
+      const articleToAdd = {
+        link: rssLink,
+        body: '',
+        title: '',
+        id: state.feeds.length,
+        entries: [],
+      };
+
+      const fetchTitle = async (link) => {
         try {
-          const response = await axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(link)}`);
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(response.data.contents, 'text/html');
-          const titleElement = doc.querySelector('title');
-          if (titleElement) {
-            const title = titleElement.textContent;
-            return title;
+          const parser = new Parser();
+          const feed = await parser.parseURL(link);
+          if (feed.title) {
+            return feed.title;
           }
           throw new Error('Title not found');
         } catch (error) {
@@ -96,11 +102,11 @@ const app = async () => {
         }
       };
 
-      const articleToAdd = { link: rssLink, body: '', title: '' };
       try {
-        const title = await fetchData(rssLink);
+        const allOriginsUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(rssLink)}`;
+        const title = await fetchTitle(allOriginsUrl);
         articleToAdd.title = title;
-        state.articles.push(articleToAdd);
+        state.feeds.push(articleToAdd);
         state.articleCount += 1;
         render(state);
       } catch (error) {
@@ -108,7 +114,9 @@ const app = async () => {
       }
     });
 
-    state.articles.forEach((article) => {
+    const feedList = document.createElement('div');
+    feedList.classList.add('feed-list');
+    state.feeds.forEach((article) => {
       const container = document.createElement('div');
       const title = document.createElement('h2');
       title.textContent = article.title;
@@ -123,8 +131,16 @@ const app = async () => {
       container.append(body);
       container.append(link);
       container.classList.add('link-container');
-      mainContainer.appendChild(container);
+      feedList.append(container);
     });
+    const feedListTitle = document.createElement('h2');
+    feedListTitle.classList.add('feed-list-title');
+    feedListTitle.textContent = i18n.t('feedlisttitle');
+    if (feedList.textContent !== '') {
+      feedList.prepend(feedListTitle);
+      mainContainer.append(feedList);
+    }
+    console.log(state);
   };
 
   render(state);

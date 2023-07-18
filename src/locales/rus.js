@@ -4,5 +4,6 @@ export default {
     addRSS: 'Добавить',
     placeholder: 'Введите ссылку',
     readmore: 'Читать дальше...',
+    feedlisttitle: 'Список фидов',
   },
 };
