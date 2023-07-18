@@ -4,6 +4,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 20px;
+  background-color: rgb(243, 240, 237);
 }
 
 h1 {
@@ -39,9 +40,22 @@ button[type="submit"]:hover {
   background-color: #0056b3;
 }
 
+.link-container {
+  background-color: #0a3360;
+  padding: 10px 20px;
+  border: solid double;
+  border-radius: 10px;
+  font-size: 50px;
+  font-weight: 300;
+  margin: 10px;
+  color: white;
+  vertical-align:text-bottom;
+  width: 1000px;
+}
 
 @media only screen and (max-width: 600px) {
   input[type="text"] {
     width: 100%;
   }
 }
+
