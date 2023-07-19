@@ -43,6 +43,7 @@ const app = async () => {
     mainContainer.appendChild(inputForm);
     const header = document.createElement('h1');
     header.textContent = `${i18n.t('title')}`;
+    header.classList.add('.header');
     mainContainer.prepend(header);
 
     const field = document.getElementById('link-input');
@@ -76,24 +77,50 @@ const app = async () => {
       if (existingArticle) {
         inputElement.classList.add('invalid');
         button.disabled = true;
-        render(state);
         return;
       }
 
       const articleToAdd = {
         link: rssLink,
-        body: '',
         title: '',
-        id: state.feeds.length,
+        id: state.feeds.length + 1,
         entries: [],
       };
 
       const fetchTitle = async (link) => {
         try {
-          const parser = new Parser();
-          const feed = await parser.parseURL(link);
-          if (feed.title) {
-            return feed.title;
+          const allOriginsUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(link)}`;
+          const response = await fetch(allOriginsUrl);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.contents) {
+              const parser = new Parser();
+              const feed = await parser.parseString(data.contents);
+              if (feed.title) {
+                return feed.title;
+              }
+            }
+          }
+          throw new Error('Title not found');
+        } catch (error) {
+          console.log('Error:', error);
+          throw error;
+        }
+      };
+
+      const fetchDescription = async (link) => {
+        try {
+          const allOriginsUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(link)}`;
+          const response = await fetch(allOriginsUrl);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.contents) {
+              const parser = new Parser();
+              const feed = await parser.parseString(data.contents);
+              if (feed.description) {
+                return feed.description;
+              }
+            }
           }
           throw new Error('Title not found');
         } catch (error) {
@@ -103,44 +130,43 @@ const app = async () => {
       };
 
       try {
-        const allOriginsUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(rssLink)}`;
-        const title = await fetchTitle(allOriginsUrl);
+        const title = await fetchTitle(rssLink);
         articleToAdd.title = title;
+        const description = await fetchDescription(rssLink);
+        articleToAdd.description = description;
         state.feeds.push(articleToAdd);
         state.articleCount += 1;
         render(state);
       } catch (error) {
         console.error('Error:', error);
       }
-    });
 
-    const feedList = document.createElement('div');
-    feedList.classList.add('feed-list');
-    state.feeds.forEach((article) => {
-      const container = document.createElement('div');
-      const title = document.createElement('h2');
-      title.textContent = article.title;
-      title.classList.add('title');
-      const body = document.createElement('p');
-      body.textContent = article.body;
-      const link = document.createElement('a');
-      link.textContent = `${i18n.t('readmore')}`;
-      link.href = `${article.link}`;
-      link.classList.add('link');
-      container.append(title);
-      container.append(body);
-      container.append(link);
-      container.classList.add('link-container');
-      feedList.append(container);
+      const feedList = document.createElement('div');
+      feedList.textContent = '';
+      feedList.classList.add('feed-list');
+      state.feeds.forEach((feed) => {
+        const container = document.createElement('div');
+        const title = document.createElement('h2');
+        title.textContent = feed.title;
+        title.classList.add('title');
+        const summary = document.createElement('p');
+        summary.textContent = `${feed.description.trim().slice(0, 100)}...`;
+        container.append(title);
+        container.append(summary);
+        container.classList.add('link-container');
+        feedList.append(container);
+      });
+      const feedListTitle = document.createElement('h2');
+      feedListTitle.classList.add('feed-list-title');
+      feedListTitle.textContent = i18n.t('feedlisttitle');
+      console.log(state);
+      if (feedList.textContent !== '') {
+        feedList.prepend(feedListTitle);
+        const rightContainer = document.createElement('div');
+        rightContainer.append(feedList);
+        mainContainer.append(rightContainer);
+      }
     });
-    const feedListTitle = document.createElement('h2');
-    feedListTitle.classList.add('feed-list-title');
-    feedListTitle.textContent = i18n.t('feedlisttitle');
-    if (feedList.textContent !== '') {
-      feedList.prepend(feedListTitle);
-      mainContainer.append(feedList);
-    }
-    console.log(state);
   };
 
   render(state);
