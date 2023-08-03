@@ -112,7 +112,6 @@ const app = async () => {
       const entriesTitle = document.createElement('h2');
       entriesTitle.classList.add('entries-list-title');
       entriesTitle.textContent = i18n.t('entrieslisttitle');
-
       if (feedList.textContent !== '') {
         feedList.prepend(feedListTitle);
         entriesList.prepend(entriesTitle);
@@ -120,9 +119,27 @@ const app = async () => {
         mainContainer.append(entriesList);
         console.log(state);
       }
+      const readMore = document.getElementsByClassName('read-more-button');
+      const readMoreArray = [...readMore];
+      readMoreArray.forEach((readbutton) => {
+        readbutton.addEventListener('click', () => {
+          const modalOverlay = document.getElementById('modalOverlay');
+          modalOverlay.style.display = 'block';
+          const closeModalButton = document.getElementById('popup-button');
+          const allEntries = state.feeds.reduce((acc, feed) => acc.concat(feed.entries), []);
+          const postID = readbutton.getAttribute('postId');
+          const shownEntry = allEntries.find((obj) => obj.guid === `${postID}`);
+          const title = document.getElementById('popup-title');
+          title.textContent = `${shownEntry.title}`;
+          const contents = document.getElementById('popup-contents');
+          contents.textContent = `${shownEntry.contentSnippet}`;
+          closeModalButton.addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
+          });
+        });
+      });
     });
   };
-
   render(state);
 };
 
