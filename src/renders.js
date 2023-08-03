@@ -13,8 +13,7 @@ const entriesListRender = (state) => {
   allEntries.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
   allEntries.forEach((entry) => {
-    const description = `${entry.content.trim().slice(0, 200)}...` || 'No description available';
-    const singleEntryString = `<div class="entry-container"><h2 class="entry-title">${entry.title}</h2><p>${description}</p></div>`;
+    const singleEntryString = `<div class="entry-container"><a href="${entry.link}"><h2 class="entry-title">${entry.title}</h2><a></div>`;
     htmlString += singleEntryString;
   });
   return (htmlString);

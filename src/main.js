@@ -109,12 +109,14 @@ const app = async () => {
       const entriesList = document.createElement('div');
       entriesList.innerHTML = entriesListRender(state);
       entriesList.classList.add('entries-list');
+      const entriesTitle = document.createElement('h2');
+      entriesTitle.classList.add('entries-list-title');
+      entriesTitle.textContent = i18n.t('entrieslisttitle');
 
       if (feedList.textContent !== '') {
         feedList.prepend(feedListTitle);
-        const rightContainer = document.createElement('div');
-        rightContainer.append(feedList);
-        mainContainer.append(rightContainer);
+        entriesList.prepend(entriesTitle);
+        mainContainer.append(feedList);
         mainContainer.append(entriesList);
         console.log(state);
       }

@@ -5,5 +5,6 @@ export default {
     placeholder: 'Введите ссылку',
     readmore: 'Читать дальше...',
     feedlisttitle: 'Список фидов',
+    entrieslisttitle: 'Посты',
   },
 };
