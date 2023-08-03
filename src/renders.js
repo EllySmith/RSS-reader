@@ -20,4 +20,46 @@ const entriesListRender = (state) => {
   return (htmlString);
 };
 
-export { feedListRender, entriesListRender };
+const initialRender = () => {
+  const mainContainer = document.getElementById('main-container');
+  mainContainer.innerHTML = '';
+  const inputForm = document.createElement('form');
+  inputForm.id = 'input-form';
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.id = 'link-input';
+  const button = document.createElement('button');
+  button.type = 'submit';
+  button.id = 'submit-button';
+  inputForm.appendChild(input);
+  inputForm.appendChild(button);
+  mainContainer.appendChild(inputForm);
+  const header = document.createElement('h1');
+  header.textContent = `${i18n.t('title')}`;
+  header.classList.add('.header');
+  mainContainer.prepend(header);
+};
+
+const renderButtons = (state, array) => {
+  array.forEach((readbutton) => {
+    readbutton.addEventListener('click', () => {
+      const modalOverlay = document.getElementById('modalOverlay');
+      modalOverlay.style.display = 'block';
+      const closeModalButton = document.getElementById('popup-button');
+      const allEntries = state.feeds.reduce((acc, feed) => acc.concat(feed.entries), []);
+      const postID = readbutton.getAttribute('postId');
+      const shownEntry = allEntries.find((obj) => obj.guid === `${postID}`);
+      const title = document.getElementById('popup-title');
+      title.textContent = `${shownEntry.title}`;
+      const contents = document.getElementById('popup-contents');
+      contents.textContent = `${shownEntry.content}`;
+      closeModalButton.addEventListener('click', () => {
+        modalOverlay.style.display = 'none';
+      });
+    });
+  });
+};
+
+export {
+  feedListRender, entriesListRender, initialRender, renderButtons,
+};

@@ -6,7 +6,9 @@ import Parser from 'rss-parser';
 import axios from 'axios';
 import rus from './locales/rus.js';
 import { fetchTitle, fetchDescription, fetchEntries } from './fetchers.js';
-import { feedListRender, entriesListRender } from './renders.js';
+import {
+  feedListRender, entriesListRender, initialRender, renderButtons,
+} from './renders.js';
 
 const app = async () => {
   const state = {
@@ -26,27 +28,12 @@ const app = async () => {
   i18n.changeLanguage('ru');
 
   const render = () => {
-    const mainContainer = document.getElementById('main-container');
-    mainContainer.innerHTML = '';
-    const inputForm = document.createElement('form');
-    inputForm.id = 'input-form';
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.id = 'link-input';
-    const button = document.createElement('button');
-    button.type = 'submit';
-    button.id = 'submit-button';
-    inputForm.appendChild(input);
-    inputForm.appendChild(button);
-    mainContainer.appendChild(inputForm);
-    const header = document.createElement('h1');
-    header.textContent = `${i18n.t('title')}`;
-    header.classList.add('.header');
-    mainContainer.prepend(header);
+    initialRender();
 
     const field = document.getElementById('link-input');
     field.focus();
     field.addEventListener('input', () => {
+      const button = document.getElementById('submit-button');
       const inputElement = document.getElementById('link-input');
       const validationSchema = yup.object().shape({
         rssLink: yup.string().url().required(),
@@ -112,32 +99,19 @@ const app = async () => {
       const entriesTitle = document.createElement('h2');
       entriesTitle.classList.add('entries-list-title');
       entriesTitle.textContent = i18n.t('entrieslisttitle');
+
       if (feedList.textContent !== '') {
+        const mainContainer = document.getElementById('main-container');
         feedList.prepend(feedListTitle);
         entriesList.prepend(entriesTitle);
         mainContainer.append(feedList);
         mainContainer.append(entriesList);
         console.log(state);
       }
+
       const readMore = document.getElementsByClassName('read-more-button');
       const readMoreArray = [...readMore];
-      readMoreArray.forEach((readbutton) => {
-        readbutton.addEventListener('click', () => {
-          const modalOverlay = document.getElementById('modalOverlay');
-          modalOverlay.style.display = 'block';
-          const closeModalButton = document.getElementById('popup-button');
-          const allEntries = state.feeds.reduce((acc, feed) => acc.concat(feed.entries), []);
-          const postID = readbutton.getAttribute('postId');
-          const shownEntry = allEntries.find((obj) => obj.guid === `${postID}`);
-          const title = document.getElementById('popup-title');
-          title.textContent = `${shownEntry.title}`;
-          const contents = document.getElementById('popup-contents');
-          contents.textContent = `${shownEntry.contentSnippet}`;
-          closeModalButton.addEventListener('click', () => {
-            modalOverlay.style.display = 'none';
-          });
-        });
-      });
+      renderButtons(state, readMoreArray);
     });
   };
   render(state);
