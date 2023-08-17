@@ -9,10 +9,11 @@ import fetchInfo from './fetchers.js';
 import {
   feedListRender, entriesListRender, initialRender, renderButtons,
 } from './renders.js';
+import validator from './inputvalidator.js';
 
 const app = async () => {
   const state = {
-    articleCount: 0,
+    feedCount: 0,
     feeds:
        [],
   };
@@ -32,31 +33,12 @@ const app = async () => {
 
     const field = document.getElementById('link-input');
     field.focus();
-    field.addEventListener('input', () => {
-      const button = document.getElementById('submit-button');
-      const inputElement = document.getElementById('link-input');
-      const validationSchema = yup.object().shape({
-        rssLink: yup.string().url().required(),
-      });
-      const rssLink = inputElement.value.trim();
-      validationSchema.validate({ rssLink }).then(() => {
-        inputElement.classList.remove('invalid');
-        button.disabled = false;
-      }).catch(() => {
-        inputElement.classList.add('invalid');
-        button.disabled = true;
-      });
+    field.addEventListener('input', (event) => {
+      const inputValue = event.target.value;
+      validator(inputValue);
     });
 
-    const submitButton = document.getElementById('submit-button');
-    submitButton.textContent = `${i18n.t('addRSS')}`;
-
-    const form = document.getElementById('input-form');
-    const errorMessage = document.createElement('p');
-    form.append(errorMessage);
-
-    const formInputField = document.getElementById('link-input');
-    formInputField.setAttribute('placeholder', `${i18n.t('placeholder')}`);
+    const form = document.querySelector('form');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const inputElement = document.getElementById('link-input');
@@ -64,7 +46,9 @@ const app = async () => {
       const existingArticle = state.feeds.find((feed) => feed.link === rssLink);
       if (existingArticle) {
         inputElement.classList.add('invalid');
+        const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = `${i18n.t('error.exists')}`;
+        const submitButton = document.getElementById('submit-button');
         submitButton.disabled = true;
         return;
       }
@@ -84,31 +68,24 @@ const app = async () => {
         const entries = await fetchInfo(rssLink, 'entries');
         articleToAdd.entries = entries;
         state.feeds.push(articleToAdd);
-        state.articleCount += 1;
+        state.feedCount += 1;
         render(state);
       } catch (error) {
         console.error('Error:', error);
+        const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = `${i18n.t('error.notanrss')}`;
       }
 
       const feedList = document.createElement('div');
       feedList.innerHTML = feedListRender(state);
       feedList.classList.add('feed-list');
-      const feedListTitle = document.createElement('h2');
-      feedListTitle.classList.add('feed-list-title');
-      feedListTitle.textContent = i18n.t('feedlisttitle');
 
       const entriesList = document.createElement('div');
       entriesList.innerHTML = entriesListRender(state);
       entriesList.classList.add('entries-list');
-      const entriesTitle = document.createElement('h2');
-      entriesTitle.classList.add('entries-list-title');
-      entriesTitle.textContent = i18n.t('entrieslisttitle');
 
-      if (feedList.textContent !== '') {
+      if (state.feedCount > 0) {
         const mainContainer = document.getElementById('main-container');
-        feedList.prepend(feedListTitle);
-        entriesList.prepend(entriesTitle);
         mainContainer.append(feedList);
         mainContainer.append(entriesList);
       }

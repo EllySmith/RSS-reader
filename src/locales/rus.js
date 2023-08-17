@@ -6,8 +6,9 @@ export default {
     feedlisttitle: 'Список фидов',
     entrieslisttitle: 'Посты',
     readmore: 'Читать',
+    example: 'Пример RSS ссылки: http://example.com/rss/',
     error: {
-      notanrss: 'Это не РСС поток.',
+      notanrss: 'Это не RSS поток.',
       exists: 'Этот поток уже добавлен.',
     },
   },
