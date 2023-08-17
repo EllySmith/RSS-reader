@@ -6,5 +6,9 @@ export default {
     feedlisttitle: 'Список фидов',
     entrieslisttitle: 'Посты',
     readmore: 'Читать',
+    error: {
+      notanrss: 'Это не РСС поток.',
+      exists: 'Этот поток уже добавлен.',
+    },
   },
 };

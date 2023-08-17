@@ -52,6 +52,9 @@ const app = async () => {
     submitButton.textContent = `${i18n.t('addRSS')}`;
 
     const form = document.getElementById('input-form');
+    const errorMessage = document.createElement('p');
+    form.append(errorMessage);
+
     const formInputField = document.getElementById('link-input');
     formInputField.setAttribute('placeholder', `${i18n.t('placeholder')}`);
     form.addEventListener('submit', async (e) => {
@@ -61,7 +64,8 @@ const app = async () => {
       const existingArticle = state.feeds.find((feed) => feed.link === rssLink);
       if (existingArticle) {
         inputElement.classList.add('invalid');
-        button.disabled = true;
+        errorMessage.textContent = `${i18n.t('error.exists')}`;
+        submitButton.disabled = true;
         return;
       }
 
@@ -84,6 +88,7 @@ const app = async () => {
         render(state);
       } catch (error) {
         console.error('Error:', error);
+        errorMessage.textContent = `${i18n.t('error.notanrss')}`;
       }
 
       const feedList = document.createElement('div');
@@ -106,7 +111,6 @@ const app = async () => {
         entriesList.prepend(entriesTitle);
         mainContainer.append(feedList);
         mainContainer.append(entriesList);
-        console.log(state);
       }
 
       const readMore = document.getElementsByClassName('read-more-button');
@@ -114,7 +118,7 @@ const app = async () => {
       renderButtons(state, readMoreArray);
     });
   };
-  render(state);
+  setTimeout(render, 5000);
 };
 
 app();
