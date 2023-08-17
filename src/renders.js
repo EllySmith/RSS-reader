@@ -1,5 +1,34 @@
 import i18n from 'i18next';
 
+const initialRender = () => {
+  const mainContainer = document.getElementById('main-container');
+  mainContainer.innerHTML = '';
+  const inputForm = document.createElement('form');
+  inputForm.id = 'input-form';
+  const input = document.createElement('input');
+  input.setAttribute('placeholder', `${i18n.t('placeholder')}`);
+  input.type = 'text';
+  input.id = 'link-input';
+  const button = document.createElement('button');
+  button.type = 'submit';
+  button.id = 'submit-button';
+  button.textContent = `${i18n.t('addRSS')}`;
+  inputForm.appendChild(input);
+  inputForm.appendChild(button);
+  const exampleMessage = document.createElement('p');
+  exampleMessage.id = 'example-message';
+  inputForm.append(exampleMessage);
+  exampleMessage.textContent = `${i18n.t('example')}`;
+  const errorMessage = document.createElement('p');
+  errorMessage.id = 'error-message';
+  inputForm.append(errorMessage);
+  mainContainer.appendChild(inputForm);
+  const header = document.createElement('h1');
+  header.textContent = `${i18n.t('title')}`;
+  header.classList.add('.header');
+  mainContainer.prepend(header);
+};
+
 const feedListRender = (state) => {
   const feedListTitle = `<h2 class='feed-list-title'>${i18n.t('feedlisttitle')}</h2>`;
   const htmlStrings = state.feeds.map((feed) => {
@@ -22,35 +51,6 @@ const entriesListRender = (state) => {
   });
   return `${entriesListTitle}
   ${htmlString}`;
-};
-
-const initialRender = () => {
-  const mainContainer = document.getElementById('main-container');
-  mainContainer.innerHTML = '';
-  const inputForm = document.createElement('form');
-  inputForm.id = 'input-form';
-  const input = document.createElement('input');
-  input.setAttribute('placeholder', `${i18n.t('placeholder')}`);
-  input.type = 'text';
-  input.id = 'link-input';
-  const button = document.createElement('button');
-  button.type = 'submit';
-  button.id = 'submit-button';
-  button.textContent = `${i18n.t('addRSS')}`;
-  inputForm.appendChild(input);
-  inputForm.appendChild(button);
-  const exampleMessage = document.createElement('p');
-  exampleMessage.id = 'example-message';
-  exampleMessage.textContent = `${i18n.t('example')}`;
-  inputForm.append(exampleMessage);
-  const errorMessage = document.createElement('p');
-  errorMessage.id = 'error-message';
-  inputForm.append(errorMessage);
-  mainContainer.appendChild(inputForm);
-  const header = document.createElement('h1');
-  header.textContent = `${i18n.t('title')}`;
-  header.classList.add('.header');
-  mainContainer.prepend(header);
 };
 
 const renderButtons = (state, array) => {

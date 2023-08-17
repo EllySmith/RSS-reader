@@ -30,4 +30,5 @@ const fetchInfo = async (link, info) => {
     throw error;
   }
 };
+
 export default fetchInfo;

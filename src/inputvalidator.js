@@ -1,4 +1,6 @@
 import * as yup from 'yup';
+import i18n from 'i18next';
+import rus from './locales/rus.js';
 
 const validator = (inputValue) => {
   const button = document.getElementById('submit-button');
@@ -19,4 +21,16 @@ const validator = (inputValue) => {
     });
 };
 
-export default validator;
+const repeatValidator = (state, link) => {
+  const inputElement = document.getElementById('link-input');
+  const existingArticle = state.feeds.find((feed) => feed.link === link);
+  if (existingArticle) {
+    inputElement.classList.add('invalid');
+    const errorMessage = document.getElementById('error-message');
+    errorMessage.textContent = `${i18n.t('error.exists')}`;
+    const submitButton = document.getElementById('submit-button');
+    submitButton.disabled = true;
+  }
+};
+
+export { validator, repeatValidator };

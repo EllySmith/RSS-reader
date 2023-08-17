@@ -9,11 +9,13 @@ import fetchInfo from './fetchers.js';
 import {
   feedListRender, entriesListRender, initialRender, renderButtons,
 } from './renders.js';
-import validator from './inputvalidator.js';
+import { validator, repeatValidator } from './inputvalidator.js';
+import checkForNewEntries from './newentriescheck.js';
 
 const app = async () => {
   const state = {
     feedCount: 0,
+    feedLinks: [],
     feeds:
        [],
   };
@@ -53,21 +55,16 @@ const app = async () => {
         return;
       }
 
-      const articleToAdd = {
-        link: rssLink,
-        title: '',
-        id: state.feeds.length + 1,
-        entries: [],
-      };
-
       try {
-        const title = await fetchInfo(rssLink, 'title');
-        articleToAdd.title = title;
-        const description = await fetchInfo(rssLink, 'description');
-        articleToAdd.description = description;
-        const entries = await fetchInfo(rssLink, 'entries');
-        articleToAdd.entries = entries;
-        state.feeds.push(articleToAdd);
+        const newFeed = {
+          link: rssLink,
+          id: state.feeds.length + 1,
+        };
+        newFeed.title = await fetchInfo(rssLink, 'title');
+        newFeed.description = await fetchInfo(rssLink, 'description');
+        newFeed.entries = await fetchInfo(rssLink, 'entries');
+        state.feeds.push(newFeed);
+        state.feedLinks.push(rssLink);
         state.feedCount += 1;
         render(state);
       } catch (error) {
@@ -95,7 +92,7 @@ const app = async () => {
       renderButtons(state, readMoreArray);
     });
   };
-  setTimeout(render, 5000);
+  render(state);
 };
 
 app();
