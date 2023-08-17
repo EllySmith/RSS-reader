@@ -1,7 +1,7 @@
 import Parser from 'rss-parser';
 import axios from 'axios';
 
-const fetchTitle = async (link) => {
+const fetchInfo = async (link, info) => {
   try {
     const allOriginsUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(link)}`;
     const response = await fetch(allOriginsUrl);
@@ -10,58 +10,22 @@ const fetchTitle = async (link) => {
       if (data.contents) {
         const parser = new Parser();
         const feed = await parser.parseString(data.contents);
-        if (feed.title) {
-          return feed.title;
+        switch (info) {
+          case 'title':
+            return feed.title;
+          case 'description':
+            return feed.description;
+          case 'entries':
+            return feed.items;
+          default:
+            throw new Error(`Info "${info}" not supported`);
         }
       }
+      throw new Error('Title not found');
     }
-    throw new Error('Title not found');
   } catch (error) {
     console.log('Error:', error);
     throw error;
   }
 };
-
-const fetchDescription = async (link) => {
-  try {
-    const allOriginsUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(link)}`;
-    const response = await fetch(allOriginsUrl);
-    if (response.ok) {
-      const data = await response.json();
-      if (data.contents) {
-        const parser = new Parser();
-        const feed = await parser.parseString(data.contents);
-        if (feed.description) {
-          return feed.description;
-        }
-      }
-    }
-    throw new Error('Title not found');
-  } catch (error) {
-    console.log('Error:', error);
-    throw error;
-  }
-};
-
-const fetchEntries = async (link) => {
-  try {
-    const allOriginsUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(link)}`;
-    const response = await fetch(allOriginsUrl);
-    if (response.ok) {
-      const data = await response.json();
-      if (data.contents) {
-        const parser = new Parser();
-        const feed = await parser.parseString(data.contents);
-        if (feed.items) {
-          return feed.items;
-        }
-      }
-    }
-    throw new Error('Entries not found');
-  } catch (error) {
-    console.log('Error:', error);
-    throw error;
-  }
-};
-
-export { fetchTitle, fetchDescription, fetchEntries };
+export default fetchInfo;

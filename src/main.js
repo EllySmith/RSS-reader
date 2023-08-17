@@ -5,7 +5,7 @@ import i18n from 'i18next';
 import Parser from 'rss-parser';
 import axios from 'axios';
 import rus from './locales/rus.js';
-import { fetchTitle, fetchDescription, fetchEntries } from './fetchers.js';
+import fetchInfo from './fetchers.js';
 import {
   feedListRender, entriesListRender, initialRender, renderButtons,
 } from './renders.js';
@@ -73,11 +73,11 @@ const app = async () => {
       };
 
       try {
-        const title = await fetchTitle(rssLink);
+        const title = await fetchInfo(rssLink, 'title');
         articleToAdd.title = title;
-        const description = await fetchDescription(rssLink);
+        const description = await fetchInfo(rssLink, 'description');
         articleToAdd.description = description;
-        const entries = await fetchEntries(rssLink);
+        const entries = await fetchInfo(rssLink, 'entries');
         articleToAdd.entries = entries;
         state.feeds.push(articleToAdd);
         state.articleCount += 1;
