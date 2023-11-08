@@ -10,7 +10,7 @@ export default {
     rssloaded: 'RSS успешно загружен',
     error: {
       notanrss: 'Это не RSS поток.',
-      exists: 'Этот поток уже добавлен.',
+      exists: 'RSS уже существует',
     },
   },
 };
