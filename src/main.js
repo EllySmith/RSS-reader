@@ -5,12 +5,13 @@ import i18n from 'i18next';
 import Parser from 'rss-parser';
 import axios from 'axios';
 import rus from './locales/rus.js';
-import fetchInfo from './fetchers.js';
 import {
   feedListRender, entriesListRender, initialRender, renderButtons,
 } from './renders.js';
+import fetchInfo from './fetchers.js';
+import updateFeeds from './updatefeeds.js';
+
 import { validator, repeatValidator } from './inputvalidator.js';
-import checkForNewEntries from './newentriescheck.js';
 
 const app = async () => {
   const state = {
@@ -92,6 +93,30 @@ const app = async () => {
       renderButtons(state, readMoreArray);
     });
   };
+
+  const updateFeeds = async () => {
+    for (const rssLink of state.feedLinks) {
+      try {
+        const newFeedData = await fetchInfo(rssLink, 'entries');
+        const existingFeed = state.feeds.find((feed) => feed.link === rssLink);
+        if (existingFeed) {
+          existingFeed.entries = newFeedData;
+        }
+      } catch (error) {
+        console.error('Error updating feed:', error);
+      }
+    }
+
+    const entriesList = document.createElement('div');
+    entriesList.innerHTML = entriesListRender(state);
+    entriesList.classList.add('entries-list');
+
+    const existingEntriesList = document.querySelector('.entries-list');
+    existingEntriesList.replaceWith(entriesList);
+
+    setTimeout(updateFeeds, 60000); // 1 minute in milliseconds
+  };
+  updateFeeds();
   render(state);
 };
 
