@@ -7,6 +7,7 @@ const initialRender = () => {
   inputForm.id = 'input-form';
   const input = document.createElement('input');
   input.setAttribute('placeholder', `${i18n.t('placeholder')}`);
+  input.setAttribute('aria-label', 'url');
   input.type = 'text';
   input.id = 'link-input';
   const button = document.createElement('button');
