@@ -68,8 +68,8 @@ const app = async () => {
         state.feedLinks.push(rssLink);
         state.feedCount += 1;
         render(state);
-        const successMessage = document.getElementById('success-message');
-        successMessage.textContent = `${i18n.t('rssloaded')}`;
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = `${i18n.t('rssloaded')}`;
       } catch (error) {
         console.error('Error:', error);
         const errorMessage = document.getElementById('error-message');

@@ -20,9 +20,6 @@ const initialRender = () => {
   exampleMessage.id = 'example-message';
   inputForm.append(exampleMessage);
   exampleMessage.textContent = `${i18n.t('example')}`;
-  const successMessage = document.createElement('p');
-  successMessage.id = 'success-message';
-  inputForm.append(successMessage);
   const errorMessage = document.createElement('p');
   errorMessage.id = 'error-message';
   inputForm.append(errorMessage);
