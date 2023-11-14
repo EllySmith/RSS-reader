@@ -14,6 +14,8 @@ const validator = (inputValue) => {
     .then(() => {
       inputElement.classList.remove('invalid');
       button.disabled = false;
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.textContent = '';
     })
     .catch((error) => {
       inputElement.classList.add('invalid');
@@ -30,6 +32,12 @@ const repeatValidator = (state, link) => {
     errorMessage.textContent = `${i18n.t('error.exists')}`;
     const submitButton = document.getElementById('submit-button');
     submitButton.disabled = true;
+  } else {
+    inputElement.classList.remove('invalid');
+    const errorMessage = document.getElementById('error-message');
+    errorMessage.textContent = '';
+    const submitButton = document.getElementById('submit-button');
+    submitButton.disabled = false;
   }
 };
 
