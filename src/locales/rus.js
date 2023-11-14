@@ -9,8 +9,8 @@ export default {
     example: 'Пример RSS ссылки: http://example.com/rss/',
     rssloaded: 'RSS успешно загружен',
     error: {
-      notalink: 'Это не ссылка',
-      notanrss: 'Это не RSS поток.',
+      notalink: 'Ссылка должна быть валидным URL',
+      notanrss: 'Ссылка должна быть валидным URL',
       exists: 'RSS уже существует',
     },
   },

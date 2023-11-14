@@ -3,7 +3,6 @@ import i18n from 'i18next';
 import rus from './locales/rus.js';
 
 const validator = (inputValue) => {
-  const button = document.getElementById('submit-button');
   const inputElement = document.getElementById('link-input');
 
   const validationSchema = yup.object().shape({
@@ -13,12 +12,11 @@ const validator = (inputValue) => {
   validationSchema.validate({ rssLink: inputValue })
     .then(() => {
       inputElement.classList.remove('invalid');
-      button.disabled = false;
-      const errorMessage = document.getElementById('error-message');
-      errorMessage.textContent = '';
     })
     .catch((error) => {
       inputElement.classList.add('invalid');
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.textContent = `${i18n.t('error.notalink')}`;
     });
 };
 
