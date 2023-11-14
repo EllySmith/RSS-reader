@@ -23,7 +23,7 @@ const updateFeeds = async (state) => {
   const existingEntriesList = document.querySelector('.entries-list');
   existingEntriesList.replaceWith(entriesList);
 
-  setTimeout(updateFeeds, 60000); // 1 minute in milliseconds
+  setTimeout(updateFeeds, 60000);
 };
 
 export default updateFeeds;

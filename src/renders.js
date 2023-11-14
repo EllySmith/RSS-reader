@@ -33,7 +33,12 @@ const initialRender = () => {
 const feedListRender = (state) => {
   const feedListTitle = `<h2 class='feed-list-title'>${i18n.t('feedlisttitle')}</h2>`;
   const htmlStrings = state.feeds.map((feed) => {
-    const summary = `${feed.description.trim().slice(0, 200)}...`;
+    let summary = '';
+    if (feed.description) {
+      summary = `${feed.description.trim().slice(0, 200)}...`;
+    } else {
+      summary = '';
+    }
     return `<div class="link-container"><h2 class="title">${feed.title}</h2><p>${summary}</p></div>`;
   });
 
@@ -44,10 +49,13 @@ const feedListRender = (state) => {
 const entriesListRender = (state) => {
   const entriesListTitle = `<h2 class='entries-list-title'>${i18n.t('entrieslisttitle')}</h2>`;
   let htmlString = '';
-  const allEntries = state.feeds.reduce((acc, feed) => acc.concat(feed.entries), []);
+  const allEntries = state.feeds.reduce((acc, feed) => acc.concat(feed.entries), []) ?? [];
   allEntries.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
   allEntries.forEach((entry) => {
-    const singleEntryString = `<div class="entry-container"><a href="${entry.link}"><h2 class="entry-title">${entry.title}</h2><a><button class="read-more-button" postId="${entry.guid}">${i18n.t('readmore')}</button></div>`;
+    const entryLink = entry.link ?? '';
+    const entryTitle = entry.title ?? '';
+    const entryId = entry.guid ?? '';
+    const singleEntryString = `<div class="entry-container"><a href="${entryLink}"><h2 class="entry-title">${entryTitle}</h2><a><button class="read-more-button" postId="${entryId}">${i18n.t('readmore')}</button></div>`;
     htmlString += singleEntryString;
   });
   return `${entriesListTitle}
