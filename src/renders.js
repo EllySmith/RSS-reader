@@ -13,6 +13,7 @@ const initialRender = () => {
   const button = document.createElement('button');
   button.type = 'submit';
   button.id = 'submit-button';
+  button.enabled = true;
   button.textContent = `${i18n.t('addRSS')}`;
   inputForm.appendChild(input);
   inputForm.appendChild(button);
