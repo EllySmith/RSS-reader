@@ -10,7 +10,7 @@ export default {
     rssloaded: 'RSS успешно загружен',
     error: {
       notalink: 'Ссылка должна быть валидным URL',
-      notanrss: 'Ссылка должна быть валидным URL',
+      notanrss: 'Ресурс не содержит валидный RSS',
       exists: 'RSS уже существует',
     },
   },
