@@ -12,6 +12,8 @@ const validator = (inputValue) => {
   validationSchema.validate({ rssLink: inputValue })
     .then(() => {
       inputElement.classList.remove('invalid');
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.textContent = '';
     })
     .catch((error) => {
       inputElement.classList.add('invalid');
