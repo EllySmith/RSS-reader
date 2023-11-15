@@ -11,7 +11,7 @@ import {
 import fetchInfo from './fetchers.js';
 import updateFeeds from './updatefeeds.js';
 
-import { isValidRSS, validator, repeatValidator } from './inputvalidator.js';
+import { rssValidator, validator, repeatValidator } from './inputvalidator.js';
 
 const app = async () => {
   const state = {
@@ -57,7 +57,7 @@ const app = async () => {
         return;
       }
 
-      if (!isValidRSS) {
+      if (!rssValidator) {
         inputElement.classList.add('invalid');
         const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = `${i18n.t('error.notanrss')}`;

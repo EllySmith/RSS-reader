@@ -29,7 +29,7 @@ const repeatValidator = (state, link) => {
   }
 };
 
-async function isValidRSS(link) {
+async function rssValidator(link) {
   try {
     const response = await fetch(link);
     if (!response.ok) {
@@ -37,7 +37,8 @@ async function isValidRSS(link) {
     }
 
     const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('xml')) {
+    const contentLegth = response.headers.get('content-length');
+    if (contentType && contentType.includes('xml') && contentLegth > 0) {
       return true;
     }
     return false;
@@ -47,4 +48,4 @@ async function isValidRSS(link) {
   }
 }
 
-export { isValidRSS, validator, repeatValidator };
+export { rssValidator, validator, repeatValidator };

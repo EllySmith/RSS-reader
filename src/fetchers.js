@@ -9,6 +9,7 @@ const fetchInfo = async (link, info) => {
     const response = await fetch(allOriginsUrl);
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       if (data.contents) {
         const parser = new Parser();
         const feed = await parser.parseString(data.contents);
