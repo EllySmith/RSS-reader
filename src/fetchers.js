@@ -2,6 +2,7 @@ import Parser from 'rss-parser';
 import axios from 'axios';
 import i18n from 'i18next';
 import rus from './locales/rus.js';
+import { renderErrorMessage } from './renders.js';
 
 const fetchInfo = async (link, info) => {
   try {
@@ -27,8 +28,7 @@ const fetchInfo = async (link, info) => {
     }
   } catch (error) {
     console.log('Error:', error);
-    const errorMessage = document.getElementById('error-message');
-    errorMessage.textContent = `${i18n.t('error.noconnection')}`;
+    renderErrorMessage('noconnection');
     throw error;
   }
 };

@@ -1,8 +1,9 @@
 import * as yup from 'yup';
 import i18n from 'i18next';
 import rus from './locales/rus.js';
+import { renderErrorMessage } from './renders.js';
 
-const validator = (inputValue) => {
+const urlValidator = (inputValue) => {
   const validationSchema = yup.object().shape({
     rssLink: yup.string().url().required(),
   });
@@ -15,25 +16,12 @@ const validator = (inputValue) => {
   }
 };
 
-const repeatValidator = (state, link) => {
-  const inputElement = document.getElementById('link-input');
-  const existingArticle = state.feeds.find((feed) => feed.link === link);
-  if (existingArticle) {
-    const errorMessage = document.getElementById('error-message');
-    errorMessage.textContent = `${i18n.t('error.exists')}`;
-  } else {
-    const errorMessage = document.getElementById('error-message');
-    errorMessage.textContent = '';
-  }
-};
-
 async function rssValidator(link) {
   try {
     const response = await fetch(link);
     if (!response.ok) {
       return false;
     }
-
     const contentType = response.headers.get('content-type');
     const contentLegth = response.headers.get('content-length');
     if (contentType && contentType.includes('xml') && contentLegth > 0) {
@@ -46,4 +34,6 @@ async function rssValidator(link) {
   }
 }
 
-export { rssValidator, validator, repeatValidator };
+export {
+  rssValidator, urlValidator,
+};

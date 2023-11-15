@@ -28,6 +28,8 @@ const initialRender = () => {
   header.textContent = `${i18n.t('title')}`;
   header.classList.add('.header');
   mainContainer.prepend(header);
+  const field = document.getElementById('link-input');
+  field.focus();
 };
 
 const feedListRender = (state) => {
@@ -79,6 +81,11 @@ const renderButtons = (state, array) => {
   });
 };
 
+const renderErrorMessage = (type) => {
+  const errorMessage = document.getElementById('error-message');
+  errorMessage.textContent = `${i18n.t(`error.${type}`)}`;
+};
+
 export {
-  feedListRender, entriesListRender, initialRender, renderButtons,
+  feedListRender, entriesListRender, initialRender, renderButtons, renderErrorMessage,
 };

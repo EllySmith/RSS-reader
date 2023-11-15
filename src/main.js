@@ -1,20 +1,18 @@
 import './styles.scss';
 import 'bootstrap';
-import * as yup from 'yup';
 import i18n from 'i18next';
-import Parser from 'rss-parser';
-import axios from 'axios';
 import rus from './locales/rus.js';
 import {
-  feedListRender, entriesListRender, initialRender, renderButtons,
+  feedListRender, entriesListRender, initialRender, renderButtons, renderErrorMessage,
 } from './renders.js';
 import fetchInfo from './fetchers.js';
-import updateFeeds from './updatefeeds.js';
-
-import { rssValidator, validator, repeatValidator } from './inputvalidator.js';
+import {
+  rssValidator, repeatValidator, urlValidator,
+} from './validators.js';
 
 const app = async () => {
   const state = {
+    linkState: 'invalid',
     feedCount: 0,
     feedLinks: [],
     feeds:
@@ -34,33 +32,25 @@ const app = async () => {
   const render = () => {
     initialRender();
 
-    const field = document.getElementById('link-input');
-    field.focus();
-
     const form = document.querySelector('form');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const inputElement = document.getElementById('link-input');
       const rssLink = inputElement.value;
-      const existingArticle = state.feeds.find((feed) => feed.link === rssLink);
-      if (!validator(rssLink)) {
+
+      if (!urlValidator(rssLink)) {
+        renderErrorMessage('notalink');
         inputElement.classList.add('invalid');
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = `${i18n.t('error.notalink')}`;
         return;
       }
 
-      if (existingArticle) {
-        inputElement.classList.add('invalid');
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = `${i18n.t('error.exists')}`;
+      if (!rssValidator(rssLink)) {
+        renderErrorMessage('notanrss');
         return;
       }
 
-      if (!rssValidator) {
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = `${i18n.t('error.notanrss')}`;
-        inputElement.classList.remove('invalid');
+      if (state.feeds.find((feed) => feed.link === rssLink)) {
+        renderErrorMessage('exists');
         return;
       }
 
@@ -71,41 +61,40 @@ const app = async () => {
         const newFeed = {
           link: rssLink,
           id: state.feeds.length + 1,
+          title: await fetchInfo(rssLink, 'title'),
+          description: await fetchInfo(rssLink, 'description'),
+          entries: await fetchInfo(rssLink, 'entries'),
         };
-        newFeed.title = await fetchInfo(rssLink, 'title');
-        newFeed.description = await fetchInfo(rssLink, 'description');
-        newFeed.entries = await fetchInfo(rssLink, 'entries');
         state.feeds.push(newFeed);
         state.feedLinks.push(rssLink);
         state.feedCount += 1;
         render(state);
         const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = `${i18n.t('rssloaded')}`;
+        inputElement.classList.remove('invalid');
         submitButton.disabled = false;
       } catch (error) {
         console.error('Error:', error);
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = `${i18n.t('error.notanrss')}`;
+        renderErrorMessage('notanrss');
         submitButton.disabled = false;
       }
 
-      const feedList = document.createElement('div');
-      feedList.innerHTML = feedListRender(state);
-      feedList.classList.add('feed-list');
-
-      const entriesList = document.createElement('div');
-      entriesList.innerHTML = entriesListRender(state);
-      entriesList.classList.add('entries-list');
-
       if (state.feedCount > 0) {
+        const feedList = document.createElement('div');
+        feedList.innerHTML = feedListRender(state);
+        feedList.classList.add('feed-list');
+
+        const entriesList = document.createElement('div');
+        entriesList.innerHTML = entriesListRender(state);
+        entriesList.classList.add('entries-list');
+
         const mainContainer = document.getElementById('main-container');
         mainContainer.append(feedList);
         mainContainer.append(entriesList);
+        const readMore = document.getElementsByClassName('read-more-button');
+        const readMoreArray = [...readMore];
+        renderButtons(state, readMoreArray);
       }
-
-      const readMore = document.getElementsByClassName('read-more-button');
-      const readMoreArray = [...readMore];
-      renderButtons(state, readMoreArray);
     });
   };
 

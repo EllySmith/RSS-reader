@@ -13,6 +13,7 @@ export default {
       notanrss: 'Ресурс не содержит валидный RSS',
       noconnection: 'Ошибка сети',
       exists: 'RSS уже существует',
+      none: '',
     },
   },
 };
