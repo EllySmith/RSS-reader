@@ -11,7 +11,7 @@ import {
 import fetchInfo from './fetchers.js';
 import updateFeeds from './updatefeeds.js';
 
-import { validator, repeatValidator } from './inputvalidator.js';
+import { isValidRSS, validator, repeatValidator } from './inputvalidator.js';
 
 const app = async () => {
   const state = {
@@ -36,10 +36,6 @@ const app = async () => {
 
     const field = document.getElementById('link-input');
     field.focus();
-    field.addEventListener('input', (event) => {
-      const inputValue = event.target.value;
-      validator(inputValue);
-    });
 
     const form = document.querySelector('form');
     form.addEventListener('submit', async (e) => {
@@ -61,7 +57,17 @@ const app = async () => {
         return;
       }
 
+      if (!isValidRSS) {
+        inputElement.classList.add('invalid');
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = `${i18n.t('error.notanrss')}`;
+        return;
+      }
+
+      const submitButton = document.querySelector('button[type="submit"]');
+
       try {
+        submitButton.disabled = true;
         const newFeed = {
           link: rssLink,
           id: state.feeds.length + 1,
@@ -75,10 +81,12 @@ const app = async () => {
         render(state);
         const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = `${i18n.t('rssloaded')}`;
+        submitButton.disabled = false;
       } catch (error) {
         console.error('Error:', error);
         const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = `${i18n.t('error.notanrss')}`;
+        submitButton.disabled = false;
       }
 
       const feedList = document.createElement('div');
@@ -100,10 +108,6 @@ const app = async () => {
       renderButtons(state, readMoreArray);
     });
   };
-
-  const entriesList = document.createElement('div');
-  entriesList.innerHTML = entriesListRender(state);
-  entriesList.classList.add('entries-list');
 
   render(state);
 };

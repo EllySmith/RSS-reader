@@ -29,4 +29,22 @@ const repeatValidator = (state, link) => {
   }
 };
 
-export { validator, repeatValidator };
+async function isValidRSS(link) {
+  try {
+    const response = await fetch(link);
+    if (!response.ok) {
+      return false;
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('xml')) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error checking RSS link:', error);
+    return false;
+  }
+}
+
+export { isValidRSS, validator, repeatValidator };
