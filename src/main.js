@@ -63,9 +63,9 @@ const app = async () => {
       }
 
       if (!rssValidator) {
-        inputElement.classList.add('invalid');
         const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = `${i18n.t('error.notanrss')}`;
+        inputElement.classList.remove('invalid');
         return;
       }
 

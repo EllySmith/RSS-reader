@@ -19,11 +19,9 @@ const repeatValidator = (state, link) => {
   const inputElement = document.getElementById('link-input');
   const existingArticle = state.feeds.find((feed) => feed.link === link);
   if (existingArticle) {
-    inputElement.classList.add('invalid');
     const errorMessage = document.getElementById('error-message');
     errorMessage.textContent = `${i18n.t('error.exists')}`;
   } else {
-    inputElement.classList.remove('invalid');
     const errorMessage = document.getElementById('error-message');
     errorMessage.textContent = '';
   }
