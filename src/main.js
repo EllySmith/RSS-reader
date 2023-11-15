@@ -47,12 +47,17 @@ const app = async () => {
       const inputElement = document.getElementById('link-input');
       const rssLink = inputElement.value;
       const existingArticle = state.feeds.find((feed) => feed.link === rssLink);
+      if (!validator(rssLink)) {
+        inputElement.classList.add('invalid');
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.textContent = `${i18n.t('error.notalink')}`;
+        return;
+      }
+
       if (existingArticle) {
         inputElement.classList.add('invalid');
         const errorMessage = document.getElementById('error-message');
         errorMessage.textContent = `${i18n.t('error.exists')}`;
-        const submitButton = document.getElementById('submit-button');
-        submitButton.disabled = true;
         return;
       }
 
@@ -96,29 +101,10 @@ const app = async () => {
     });
   };
 
-  const updateFeeds = async () => {
-    for (const rssLink of state.feedLinks) {
-      try {
-        const newFeedData = await fetchInfo(rssLink, 'entries');
-        const existingFeed = state.feeds.find((feed) => feed.link === rssLink);
-        if (existingFeed) {
-          existingFeed.entries = newFeedData;
-        }
-      } catch (error) {
-        console.error('Error updating feed:', error);
-      }
-    }
+  const entriesList = document.createElement('div');
+  entriesList.innerHTML = entriesListRender(state);
+  entriesList.classList.add('entries-list');
 
-    const entriesList = document.createElement('div');
-    entriesList.innerHTML = entriesListRender(state);
-    entriesList.classList.add('entries-list');
-
-    const existingEntriesList = document.querySelector('.entries-list');
-    existingEntriesList.replaceWith(entriesList);
-
-    setTimeout(updateFeeds, 60000); // 1 minute in milliseconds
-  };
-  updateFeeds();
   render(state);
 };
 

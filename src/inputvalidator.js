@@ -3,23 +3,16 @@ import i18n from 'i18next';
 import rus from './locales/rus.js';
 
 const validator = (inputValue) => {
-  const inputElement = document.getElementById('link-input');
-
   const validationSchema = yup.object().shape({
     rssLink: yup.string().url().required(),
   });
 
-  validationSchema.validate({ rssLink: inputValue })
-    .then(() => {
-      inputElement.classList.remove('invalid');
-      const errorMessage = document.getElementById('error-message');
-      errorMessage.textContent = '';
-    })
-    .catch((error) => {
-      inputElement.classList.add('invalid');
-      const errorMessage = document.getElementById('error-message');
-      errorMessage.textContent = `${i18n.t('error.notalink')}`;
-    });
+  try {
+    validationSchema.validateSync({ rssLink: inputValue });
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
 
 const repeatValidator = (state, link) => {
