@@ -71,7 +71,7 @@ const renderButtons = (state, array) => {
       const title = document.getElementById('popup-title');
       title.textContent = `${shownEntry.title}`;
       const contents = document.getElementById('popup-contents');
-      contents.textContent = `${shownEntry.content}`;
+      contents.textContent = `${shownEntry.content.slice(0, 1000)}`;
       closeModalButton.addEventListener('click', () => {
         modalOverlay.style.display = 'none';
       });

@@ -5,7 +5,7 @@ import rus from './locales/rus.js';
 
 const fetchInfo = async (link, info) => {
   try {
-    const allOriginsUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(link)}`;
+    const allOriginsUrl = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(link)}`;
     const response = await fetch(allOriginsUrl);
     if (response.ok) {
       const data = await response.json();
