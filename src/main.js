@@ -85,7 +85,7 @@ const app = async () => {
       } catch (error) {
         console.error('Error:', error);
         const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = `${i18n.t('error.noconnection')}`;
+        errorMessage.textContent = `${i18n.t('error.notanrss')}`;
         submitButton.disabled = false;
       }
 
