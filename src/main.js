@@ -36,6 +36,11 @@ const app = async () => {
 
     const field = document.getElementById('link-input');
     field.focus();
+    if (!navigator.onLine) {
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.textContent = `${i18n.t('error.noconnection')}`;
+      return;
+    }
 
     const form = document.querySelector('form');
     form.addEventListener('submit', async (e) => {

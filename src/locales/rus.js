@@ -11,6 +11,7 @@ export default {
     error: {
       notalink: 'Ссылка должна быть валидным URL',
       notanrss: 'Ресурс не содержит валидный RSS',
+      noconnection: 'Нет соединения',
       exists: 'RSS уже существует',
     },
   },
