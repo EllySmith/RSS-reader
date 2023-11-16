@@ -1,13 +1,14 @@
 export default {
   translation: {
     title: 'Создайте свой RSS поток',
+    placeholder: 'Ссылка RSS',
     addRSS: 'Добавить',
-    placeholder: 'Введите ссылку',
     feedlisttitle: 'Список фидов',
     entrieslisttitle: 'Посты',
     readmore: 'Читать',
     example: 'Пример RSS ссылки: http://example.com/rss/',
     rssloaded: 'RSS успешно загружен',
+    closemodal: 'Закрыть',
     error: {
       notalink: 'Ссылка должна быть валидным URL',
       notanrss: 'Ресурс не содержит валидный RSS',

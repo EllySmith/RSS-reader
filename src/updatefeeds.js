@@ -4,15 +4,12 @@ import {
 } from './renders.js';
 
 const updateFeeds = async (state) => {
-  for (const rssLink of state.feedLinks) {
-    try {
-      const newFeedData = await fetchInfo(rssLink, 'entries');
-      const existingFeed = state.feeds.find((feed) => feed.link === rssLink);
-      if (existingFeed) {
-        existingFeed.entries = newFeedData;
-      }
-    } catch (error) {
-      console.error('Error updating feed:', error);
+  for (const feed of state.feedLinks) {
+    const feedLink = feed.link;
+    const newFeedData = await fetchInfo(feedLink, 'entries');
+    const existingFeed = state.feeds.find((feed) => feed.link === rssLink);
+    if (existingFeed) {
+      existingFeed.entries = newFeedData;
     }
   }
 
@@ -22,8 +19,6 @@ const updateFeeds = async (state) => {
 
   const existingEntriesList = document.querySelector('.entries-list');
   existingEntriesList.replaceWith(entriesList);
-
-  setTimeout(updateFeeds, 60000);
 };
 
 export default updateFeeds;

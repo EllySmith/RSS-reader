@@ -1,4 +1,4 @@
-@import "~bootstrap/scss/bootstrap";
+@import '~bootstrap/scss/bootstrap';
 
 body {
   font-family: Arial, sans-serif;
@@ -6,43 +6,16 @@ body {
   background-color: #fbf0ea;
 }
 
-h1 {
-  text-align: center;
-  position: fixed;
-  left: 30%;
-  margin-bottom: 20px;
+#rss-header {
+  color: #062a51;
 }
 
-.header:h1 {
-  width: 100%;
-  position: fixed;
-  top: 0;
-  align-content: center;
-}
-
-#example-message,
-#error-message {
-  font-size: 12px;
-  margin-top: 5px;
-  color: #666;
-  text-align: left;
-}
-
-#error-message {
-  color: #020202; 
-}
-
-form {
-  position: fixed;
-  left: 35%;
-  margin-top: 60px;
-  text-align: center;
-  margin-bottom: 10px;
+#example {
+  padding-top: 1%;
+  color: #49535d;
 }
 
 input[type="text"] {
-  width: 300px;
-  padding: 10px;
   border: 2px solid #09023d;
   border-radius: 4px;
 }
@@ -52,8 +25,8 @@ input[type="text"].invalid {
 }
 
 button[type="submit"] {
-  margin: 30px;
-  padding: 10px;
+  padding-left: 20%;
+  padding-right: 20%;
   background-color: #032142;
   color: #fff;
   border: none;
@@ -72,9 +45,10 @@ button[type="submit"]:hover {
 button[type="submit"]:active {
   transform: scale(0.95);
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.4);
+  background-color: #062a51;
 }
 
-button:disabled {
+button[type="submit"]:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   color: #ccc;
@@ -83,99 +57,41 @@ button:disabled {
   transform: none;
 }
 
-button:disabled:hover {
+button[type="submit"]:disabled:hover {
   transform: none;
   box-shadow: none;
   transition: none;
 }
 
-.link-container {
-  margin: 30px;
-  padding: 10px;
-  background-color: #032142;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 12px;
-  text-align: justify;
-}
-
-.link-container .title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.feed-list {
-  position: fixed;
-  top: 33%;
-  right: 10px;
-  width: 30%; 
-  height: 100%;
-  overflow-y: auto;
-  right: 0;
-}
-
-
-.feed-list-title {
-  font-size: 25px;
-  text-align: center;
-  margin-bottom: 3%;
-}
-
-.entries-list {
-  position: fixed;
-  top: 33%;
-  left: 0;
-  width: 70%;
-  height: 100%;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  overflow-y: auto;
-}
-
-.entries-list-title {
-  font-size: 25px;
-  text-align: center;
-  left: 10%;
-  margin-bottom: 3%;
-}
-
-.entry-container {
-  margin: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1; 
-  width: 98%; 
-  padding: 5px;
-  border: 2px solid #7b695e;
-  overflow-y: auto;
-  border-radius: 8px;
-}
-
-#main-container {
-  padding: 20px;
-  width: 100%; 
-  height: 30%;
-  vertical-align: center;
+#form-container {
   background: linear-gradient(135deg, #FFDAB9, #BC8F8F);
   border-bottom: solid #032142;
 }
 
+.feed-list-title {
+  text-align: center;
+}
+
+.entries-list-title {
+  text-align: center;
+}
+
+.entry-container {
+  display: flex;
+  margin: 2%;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1; 
+}
 
 .entry-title {
-  flex: 1; 
-  margin-right: 10px;
-  font-size: 20;
-  text-align: left;
+  font-size:larger;
+  line-height: 1.5;
 }
 
 .read-more-button {
-  margin: 5px; 
-  margin-right: 15px;
-  padding: 5px;
+  height: 5vh;
+  padding: 15%;
   background-color: #032142;
   color: #fff;
   border: none;
@@ -186,45 +102,10 @@ button:disabled:hover {
 .read-more-button:hover {
   background-color: #062a51;
   transform: scale(1.05);
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.7);
-}
-
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); 
-  z-index: 9999; 
-}
-
-.modal-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-#popup-button {
-  background-color: #062a51;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 15px;
 }
 
 a {
-  color: #995f4f;
+  color: #725650;
   text-decoration: none;
   transition: color 0.3s;
 }
@@ -237,14 +118,22 @@ a:visited {
   color: #9b59b6;
 }
 
-@media only screen and (max-width: 600px) {
-  input[type="text"] {
-    width: 100%;
-  }
+.link-container {
+  margin: 3%;
+  padding: 4%;
+  background-color: #032142;
+  font-size: small;
+  color: #fff;
+  border: none;
+  text-align: justify;
+  border-radius: 4%;
 }
 
-@keyframes myAnimation {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.04); }
-  100% { transform: scale(1); }
+.link-container .title {
+  font-size: medium;
+  font-weight: bold;
+  margin-bottom: 2%;
 }
+
+
+

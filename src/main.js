@@ -12,7 +12,6 @@ import {
 
 const app = async () => {
   const state = {
-    linkState: 'invalid',
     feedCount: 0,
     feedLinks: [],
     feeds:
@@ -31,76 +30,72 @@ const app = async () => {
 
   const render = () => {
     initialRender();
+    if (state.feedCount > 0) {
+      const feedsContainer = document.getElementById('feeds');
+      feedsContainer.innerHTML = '';
+      feedsContainer.innerHTML = feedListRender(state);
 
-    const form = document.querySelector('form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const inputElement = document.getElementById('link-input');
-      const rssLink = inputElement.value;
+      const postsContainer = document.getElementById('posts');
+      postsContainer.innerHTML = '';
+      postsContainer.innerHTML = entriesListRender(state);
 
-      if (!urlValidator(rssLink)) {
-        renderErrorMessage('notalink');
-        inputElement.classList.add('invalid');
-        return;
-      }
-
-      if (!rssValidator(rssLink)) {
-        renderErrorMessage('notanrss');
-        return;
-      }
-
-      if (state.feeds.find((feed) => feed.link === rssLink)) {
-        renderErrorMessage('exists');
-        return;
-      }
-
-      const submitButton = document.querySelector('button[type="submit"]');
-
-      try {
-        submitButton.disabled = true;
-        const newFeed = {
-          link: rssLink,
-          id: state.feeds.length + 1,
-          title: await fetchInfo(rssLink, 'title'),
-          description: await fetchInfo(rssLink, 'description'),
-          entries: await fetchInfo(rssLink, 'entries'),
-        };
-        state.feeds.push(newFeed);
-        state.feedLinks.push(rssLink);
-        state.feedCount += 1;
-        render(state);
-        const errorMessage = document.getElementById('error-message');
-        errorMessage.textContent = `${i18n.t('rssloaded')}`;
-        inputElement.classList.remove('invalid');
-        submitButton.disabled = false;
-      } catch (error) {
-        console.error('Error:', error);
-        renderErrorMessage('notanrss');
-        submitButton.disabled = false;
-      }
-
-      if (state.feedCount > 0) {
-        const feedList = document.createElement('div');
-        feedList.innerHTML = feedListRender(state);
-        feedList.classList.add('feed-list');
-
-        const entriesList = document.createElement('div');
-        entriesList.innerHTML = entriesListRender(state);
-        entriesList.classList.add('entries-list');
-
-        const mainContainer = document.getElementById('main-container');
-        mainContainer.append(feedList);
-        mainContainer.append(entriesList);
-        const readMore = document.getElementsByClassName('read-more-button');
-        const readMoreArray = [...readMore];
-        renderButtons(state, readMoreArray);
-      }
-    });
+      const readMore = document.getElementsByClassName('read-more-button');
+      const readMoreArray = [...readMore];
+      renderButtons(state, readMoreArray);
+    }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const inputElement = document.getElementById('url-input');
+    const rssLink = inputElement.value;
+
+    if (!urlValidator(rssLink)) {
+      renderErrorMessage('notalink');
+      inputElement.classList.add('invalid');
+      return;
+    }
+
+    if (!rssValidator(rssLink)) {
+      renderErrorMessage('notanrss');
+      return;
+    }
+
+    if (state.feeds.find((feed) => feed.link === rssLink)) {
+      renderErrorMessage('exists');
+      return;
+    }
+
+    const submitButton = document.querySelector('button[type="submit"]');
+
+    try {
+      submitButton.disabled = true;
+      const newFeed = {
+        link: rssLink,
+        id: state.feeds.length + 1,
+        title: await fetchInfo(rssLink, 'title'),
+        description: await fetchInfo(rssLink, 'description'),
+        entries: await fetchInfo(rssLink, 'entries'),
+      };
+      state.feeds.push(newFeed);
+      state.feedLinks.push(rssLink);
+      state.feedCount += 1;
+      render(state);
+      const errorMessage = document.getElementById('error-message');
+      errorMessage.textContent = `${i18n.t('rssloaded')}`;
+      inputElement.classList.remove('invalid');
+      submitButton.disabled = false;
+    } catch (error) {
+      console.error('Error:', error);
+      renderErrorMessage('notanrss');
+      submitButton.disabled = false;
+    }
+  };
+
+  const form = document.getElementById('input-form');
+  form.addEventListener('submit', handleSubmit);
   render(state);
 };
-
 app();
 
 export default app;
