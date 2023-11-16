@@ -85,6 +85,7 @@ const app = async () => {
       errorMessage.textContent = `${i18n.t('rssloaded')}`;
       inputElement.classList.remove('invalid');
       submitButton.disabled = false;
+      inputElement.value = '';
     } catch (error) {
       console.error('Error:', error);
       renderErrorMessage('notanrss');
