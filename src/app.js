@@ -44,7 +44,7 @@ const app = () => {
         readbutton.addEventListener('click', () => renderButton(readbutton, state));
       });
     }
-    renderErrorMessage(errorMessage);
+    renderErrorMessage(errorMessage || '');
   };
 
   const onChange = (newState, errorMessage) => {
@@ -104,7 +104,7 @@ const app = () => {
 
   const form = document.getElementById('input-form');
   form.addEventListener('submit', handleSubmit);
-  render(state);
+  render();
   setInterval(async () => {
     await updateFeeds(state, render);
   }, 6000);
