@@ -1,5 +1,3 @@
-import './styles.scss';
-import 'bootstrap';
 import i18n from 'i18next';
 import rus from './locales/rus.js';
 import {
@@ -16,11 +14,11 @@ const app = async () => {
     feedCount: 0,
     feedLinks: [],
     feeds:
-       [],
+          [],
     entriesCount: 0,
   };
 
-  i18n.init({
+  await i18n.init({
     lng: 'ru',
     resources: {
       ru: {
@@ -28,7 +26,6 @@ const app = async () => {
       },
     },
   });
-  i18n.changeLanguage('ru');
 
   const render = () => {
     initialRender();
@@ -96,7 +93,6 @@ const app = async () => {
       submitButton.disabled = false;
     }
   };
-
   const form = document.getElementById('input-form');
   form.addEventListener('submit', handleSubmit);
   render(state);
@@ -104,6 +100,5 @@ const app = async () => {
     await updateFeeds(state, render);
   }, 6000);
 };
-app();
 
 export default app;
