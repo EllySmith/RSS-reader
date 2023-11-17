@@ -31,11 +31,8 @@ const app = () => {
     console.log(`render started, error is ${errorMessage}`);
     initialRender();
     if (state.feedCount > 0) {
-      const feedsContainer = document.getElementById('feeds');
-      feedsContainer.innerHTML = feedListRender(state);
-
-      const postsContainer = document.getElementById('posts');
-      postsContainer.innerHTML = entriesListRender(state);
+      feedListRender(state);
+      entriesListRender(state);
 
       const readMore = document.getElementsByClassName('read-more-button');
       const readMoreArray = [...readMore];

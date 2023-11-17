@@ -15,6 +15,7 @@ const initialRender = () => {
 };
 
 const feedListRender = (state) => {
+  const feedsContainer = document.getElementById('feeds');
   const feedListTitle = `<h2 class='feed-list-title'>${i18n.t('feedlisttitle')}</h2>`;
   let htmlString = '';
   const allFeeds = state.feeds ?? [];
@@ -24,12 +25,12 @@ const feedListRender = (state) => {
     const singleFeedString = `<div class="link-container"><h2 class="title">${feed.title}</h2><p>${summary}</p></div>`;
     htmlString += singleFeedString;
   });
-
-  return `${feedListTitle}
+  feedsContainer.innerHTML = `${feedListTitle}
   ${htmlString}`;
 };
 
 const entriesListRender = (state) => {
+  const postsContainer = document.getElementById('posts');
   const entriesListTitle = `<h2 class='entries-list-title'>${i18n.t('entrieslisttitle')}</h2>`;
   let htmlString = '';
   const entries = state.feeds ?? [];
@@ -42,7 +43,7 @@ const entriesListRender = (state) => {
     const singleEntryString = `<div class="entry-container"><a href="${entryLink}"><h2 class="entry-title">${entryTitle}</h2><a><button class="read-more-button" postId="${entryId}">${i18n.t('readmore')}</button></div>`;
     htmlString += singleEntryString;
   });
-  return `${entriesListTitle}
+  postsContainer.innerHTML = `${entriesListTitle}
   ${htmlString}`;
 };
 
