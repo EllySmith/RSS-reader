@@ -46,32 +46,28 @@ const entriesListRender = (state) => {
   ${htmlString}`;
 };
 
-const renderButtons = (state, array) => {
-  array.forEach((readbutton) => {
-    readbutton.addEventListener('click', () => {
-      const myModal = new bootstrap.Modal(document.getElementById('modalOverlay'));
-      myModal.show();
-      const closeModalButton = document.getElementById('close-modal-btn');
-      closeModalButton.textContent = `${i18n.t('closemodal')}`;
-      const allEntries = state.feeds.reduce((acc, feed) => acc.concat(feed.entries), []);
-      const postID = readbutton.getAttribute('postId');
-      const shownEntry = allEntries.find((obj) => obj.guid === `${postID}`);
-      const title = document.querySelector('.modal-title');
-      title.textContent = `${shownEntry.title}`;
-      const contents = document.querySelector('.modal-descr');
-      contents.textContent = `${shownEntry.content.slice(0, 1000)}`;
-      closeModalButton.addEventListener('click', () => {
-        myModal.hide();
-      });
-    });
-  });
-};
-
 const renderErrorMessage = (type) => {
   const errorMessage = document.getElementById('error-message');
   errorMessage.textContent = `${i18n.t(`error.${type}`)}`;
 };
 
+const renderButton = (readbutton, state) => {
+  const myModal = new bootstrap.Modal(document.getElementById('modalOverlay'));
+  myModal.show();
+  const closeModalButton = document.getElementById('close-modal-btn');
+  closeModalButton.textContent = `${i18n.t('closemodal')}`;
+  const allEntries = state.feeds.reduce((acc, feed) => acc.concat(feed.entries), []);
+  const postID = readbutton.getAttribute('postId');
+  const shownEntry = allEntries.find((obj) => obj.guid === `${postID}`);
+  const title = document.querySelector('.modal-title');
+  title.textContent = `${shownEntry.title}`;
+  const contents = document.querySelector('.modal-descr');
+  contents.textContent = `${shownEntry.content.slice(0, 1000)}`;
+  closeModalButton.addEventListener('click', () => {
+    myModal.hide();
+  });
+};
+
 export {
-  feedListRender, entriesListRender, initialRender, renderButtons, renderErrorMessage,
+  feedListRender, entriesListRender, initialRender, renderErrorMessage, renderButton,
 };

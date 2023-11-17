@@ -7,9 +7,9 @@ export default {
     entrieslisttitle: 'Посты',
     readmore: 'Читать',
     example: 'Пример RSS ссылки: http://example.com/rss/',
-    rssloaded: 'RSS успешно загружен',
     closemodal: 'Закрыть',
     error: {
+      rssloaded: 'RSS успешно загружен',
       notalink: 'Ссылка должна быть валидным URL',
       notanrss: 'Ресурс не содержит валидный RSS',
       noconnection: 'Ошибка сети',
