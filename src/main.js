@@ -9,6 +9,7 @@ import fetchInfo from './fetchers.js';
 import {
   rssValidator, repeatValidator, urlValidator,
 } from './validators.js';
+import updateFeeds from './updatefeeds.js';
 
 const app = async () => {
   const state = {
@@ -16,6 +17,7 @@ const app = async () => {
     feedLinks: [],
     feeds:
        [],
+    entriesCount: 0,
   };
 
   i18n.init({
@@ -80,11 +82,13 @@ const app = async () => {
       state.feeds.push(newFeed);
       state.feedLinks.push(rssLink);
       state.feedCount += 1;
+      state.entriesCount += newFeed.entries.length;
       render(state);
       const errorMessage = document.getElementById('error-message');
       errorMessage.textContent = `${i18n.t('rssloaded')}`;
       inputElement.classList.remove('invalid');
       submitButton.disabled = false;
+      console.log(state);
       inputElement.value = '';
     } catch (error) {
       console.error('Error:', error);
@@ -96,6 +100,9 @@ const app = async () => {
   const form = document.getElementById('input-form');
   form.addEventListener('submit', handleSubmit);
   render(state);
+  setInterval(async () => {
+    await updateFeeds(state, render);
+  }, 6000);
 };
 app();
 
