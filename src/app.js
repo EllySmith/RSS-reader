@@ -28,6 +28,7 @@ const app = () => {
   });
 
   const render = (errorMessage) => {
+    console.log(`render started, error is ${errorMessage}`);
     initialRender();
     if (state.feedCount > 0) {
       const feedsContainer = document.getElementById('feeds');
@@ -42,9 +43,8 @@ const app = () => {
       readMoreArray.forEach((readbutton) => {
         readbutton.addEventListener('click', () => renderButton(readbutton, state));
       });
-
-      renderErrorMessage(errorMessage || '');
     }
+    renderErrorMessage(errorMessage);
   };
 
   const onChange = (newState, errorMessage) => {

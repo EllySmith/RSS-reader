@@ -47,6 +47,7 @@ const entriesListRender = (state) => {
 };
 
 const renderErrorMessage = (type) => {
+  console.log(`error ${type} being rendered`);
   const errorMessage = document.getElementById('error-message');
   errorMessage.textContent = `${i18n.t(`error.${type}`)}`;
 };
