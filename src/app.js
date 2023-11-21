@@ -1,7 +1,8 @@
 import i18n from 'i18next';
 import rus from './locales/rus.js';
 import {
-  feedListRender, entriesListRender, initialRender, renderErrorMessage, renderButton,
+  feedListRender, entriesListRender, initialRender,
+  renderErrorMessage, renderButton, renderSccessMEssage,
 } from './renders.js';
 import fetchInfo from './fetchers.js';
 import {
@@ -36,7 +37,6 @@ const app = () => {
 
       const readMore = document.getElementsByClassName('read-more-button');
       const readMoreArray = [...readMore];
-      console.log(readMoreArray);
       readMoreArray.forEach((readbutton) => {
         readbutton.addEventListener('click', () => renderButton(readbutton, state));
       });
@@ -56,7 +56,6 @@ const app = () => {
 
     if (!urlValidator(rssLink)) {
       onChange(state, 'notalink');
-      inputElement.classList.add('invalid');
       return;
     }
 
@@ -69,8 +68,6 @@ const app = () => {
       onChange(state, 'exists');
       return;
     }
-
-    const submitButton = document.querySelector('button[type="submit"]');
 
     fetchInfo(rssLink, 'title')
       .then((title) => fetchInfo(rssLink, 'description').then((description) => fetchInfo(rssLink, 'entries').then((entries) => {
@@ -86,16 +83,11 @@ const app = () => {
           feedLinks: [...state.feedLinks, rssLink],
           feedCount: state.feedCount + 1,
           entriesCount: state.entriesCount + newFeed.entries.length,
-        }, `${i18n.t('rssloaded')}`);
-        inputElement.classList.remove('invalid');
-        submitButton.disabled = false;
-        console.log(state);
-        inputElement.value = '';
+        }, 'rssloaded');
       })))
       .catch((error) => {
         console.error('Error:', error);
         onChange(state, 'notanrss');
-        submitButton.disabled = false;
       });
   };
 

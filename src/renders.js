@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import 'bootstrap';
+import { SingleEntryPlugin } from 'webpack';
 
 const initialRender = () => {
   const placeholder = document.querySelector('label[for="url-input"]');
@@ -15,46 +16,91 @@ const initialRender = () => {
 };
 
 const feedListRender = (state) => {
-  const feedsContainer = document.getElementById('feeds');
-  const feedListTitle = `<h2 class='feed-list-title'>${i18n.t('feedlisttitle')}</h2>`;
-  let htmlString = '';
+  const feedsContainer = document.querySelector('#feeds');
+  feedsContainer.innerHTML = '';
+  const feedListTitle = document.createElement('h2');
+  feedListTitle.classList.add('feed-list-title');
+  feedListTitle.textContent = `${i18n.t('feedlisttitle')}`;
+  feedsContainer.prepend(feedListTitle);
+
   const allFeeds = state.feeds ?? [];
   allFeeds.forEach((feed) => {
     const description = feed?.description ?? '';
     const summary = `${description.trim().slice(0, 200)}...` ?? '';
-    const singleFeedString = `<div class="link-container"><h2 class="title">${feed.title}</h2><p>${summary}</p></div>`;
-    htmlString += singleFeedString;
+    const singleFeed = document.createElement('div');
+    singleFeed.classList.add('link-container');
+    const feedTitle = document.createElement('h2');
+    feedTitle.classList.add('title');
+    feedTitle.textContent = feed.title;
+    const feedSummary = document.createElement('p');
+    feedSummary.textContent = summary;
+    singleFeed.append(feedTitle, feedSummary);
+    feedsContainer.append(singleFeed);
   });
-  feedsContainer.innerHTML = `${feedListTitle}
-  ${htmlString}`;
 };
 
 const entriesListRender = (state) => {
   const postsContainer = document.getElementById('posts');
-  const entriesListTitle = `<h2 class='entries-list-title'>${i18n.t('entrieslisttitle')}</h2>`;
-  let htmlString = '';
+  const entriesListTitle = document.createElement('h2');
+  entriesListTitle.classList.add('entries-list-title');
+  entriesListTitle.textContent = i18n.t('entrieslisttitle');
+  postsContainer.innerHTML = '';
+  postsContainer.appendChild(entriesListTitle);
+
   const entries = state.feeds ?? [];
   const allEntries = entries.reduce((acc, feed) => acc.concat(feed.entries), []) ?? [];
   allEntries.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
   allEntries.forEach((entry) => {
     const entryLink = entry?.link ?? '';
     const entryTitle = entry?.title ?? '';
     const entryId = entry?.guid ?? '';
-    const singleEntryString = `<div class="entry-container"><a href="${entryLink}"><h2 class="entry-title">${entryTitle}</h2><a><button class="read-more-button" postId="${entryId}">${i18n.t('readmore')}</button></div>`;
-    htmlString += singleEntryString;
+
+    const singleEntryContainer = document.createElement('div');
+    singleEntryContainer.classList.add('entry-container');
+
+    const entryTitleElement = document.createElement('h2');
+    entryTitleElement.classList.add('entry-title');
+    entryTitleElement.textContent = entryTitle;
+
+    const entryLinkElement = document.createElement('a');
+    entryLinkElement.href = entryLink;
+    entryLinkElement.appendChild(entryTitleElement);
+
+    const readMoreButton = document.createElement('button');
+    readMoreButton.classList.add('read-more-button');
+    readMoreButton.setAttribute('postId', entryId);
+    readMoreButton.textContent = i18n.t('readmore');
+
+    singleEntryContainer.appendChild(entryLinkElement);
+    singleEntryContainer.appendChild(readMoreButton);
+    postsContainer.appendChild(singleEntryContainer);
   });
-  postsContainer.innerHTML = `${entriesListTitle}
-  ${htmlString}`;
 };
 
 const renderErrorMessage = (type) => {
-  console.log(`error being rendered`, type);
+  console.log('error being rendered', type);
   const errorMessage = document.getElementById('error-message');
   if (type === '') {
     errorMessage.textContent = '';
     return;
   }
   errorMessage.textContent = `${i18n.t(`error.${type}`)}`;
+  if (type === 'rssloaded') {
+    const inputElement = document.getElementById('url-input');
+    const submitButton = document.querySelector('button[type="submit"]');
+    inputElement.classList.remove('invalid');
+    submitButton.disabled = false;
+    inputElement.value = '';
+    errorMessage.classList.remove('text-danger');
+    errorMessage.classList.add('text-success');
+    console.log('success');
+  }
+  if (type === 'notalink') {
+    const inputElement = document.getElementById('url-input');
+    inputElement.classList.add('invalid');
+  }
+  console.log('error');
 };
 
 const renderButton = (readbutton, state) => {
@@ -75,5 +121,6 @@ const renderButton = (readbutton, state) => {
 };
 
 export {
-  feedListRender, entriesListRender, initialRender, renderErrorMessage, renderButton,
+  feedListRender, entriesListRender, initialRender,
+  renderErrorMessage, renderButton,
 };
