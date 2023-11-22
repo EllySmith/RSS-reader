@@ -31,8 +31,7 @@ const renderForm = (state) => {
 };
 
 const renderFeeds = (state) => {
-  console.log('feeds renndering');
-  console.log(state.feeds);
+  console.log('feeds rendering');
   const feedsContainer = document.querySelector('#feeds');
   feedsContainer.innerHTML = '';
   const feedListTitle = document.createElement('h2');
@@ -55,9 +54,6 @@ const renderFeeds = (state) => {
     feedsContainer.append(singleFeed);
   });
 
-  console.log('posts renndering');
-  console.log(state.entries);
-
   const postsContainer = document.getElementById('posts');
   const entriesListTitle = document.createElement('h2');
   entriesListTitle.classList.add('entries-list-title');
@@ -66,9 +62,8 @@ const renderFeeds = (state) => {
   postsContainer.appendChild(entriesListTitle);
 
   const allEntries = state.entries;
-  console.log('entries rendered:', allEntries);
   allEntries.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-
+  console.log('entries renderig');
   allEntries.forEach((entry) => {
     const entryLink = entry?.link ?? '';
     const entryTitle = entry?.title ?? '';
@@ -97,9 +92,7 @@ const renderFeeds = (state) => {
     singleEntryContainer.appendChild(readMoreButton);
     postsContainer.appendChild(singleEntryContainer);
   });
-};
 
-const renderModal = (state) => {
   console.log('modal being rendered');
   console.log('stateCurrentId is', state.currentEntryId);
   const myModal = new bootstrap.Modal(document.getElementById('modalOverlay'));
@@ -112,7 +105,6 @@ const renderModal = (state) => {
   const closeModalButton = document.getElementById('close-modal-btn');
   closeModalButton.textContent = i18n.t('closemodal');
 
-  const allEntries = state.entries;
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
 
   if (shownEntry) {
@@ -128,4 +120,4 @@ const renderModal = (state) => {
   myModal.show();
 };
 
-export { renderForm, renderFeeds, renderModal };
+export { renderForm, renderFeeds };

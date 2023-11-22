@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import rus from './locales/rus.js';
 import {
-  renderForm, renderFeeds, renderModal,
+  renderForm, renderFeeds,
 } from './renders.js';
 import fetchInfo from './fetchers.js';
 import {
@@ -37,28 +37,31 @@ const app = () => {
       renderFeeds(state);
       const readMore = document.getElementsByClassName('read-more-button');
       const readMoreArray = [...readMore];
+      console.log('read more array', readMoreArray);
       readMoreArray.forEach((readbutton) => {
         readbutton.addEventListener('click', () => {
-          console.log(readbutton);
           const postId = readbutton.getAttribute('postId');
-          console.log('post id:', postId);
           state.currentEntryId = postId;
-          console.log('current enntry id:', state.currentEntryId);
-          renderModal(state);
+          console.log('read more click');
+          console.log('currentpostid changed to', state.currentEntryId);
         });
       });
+
       const closeModalButton = document.getElementById('close-modal-btn');
       closeModalButton.addEventListener('click', () => {
-        console.log('close modal button click');
         state.currentEntryId = '0';
-        console.log('currentpost id is', state.currentEntryId);
-        renderModal(state);
+        console.log('close modal click');
+        console.log('currentpostid changed to', state.currentEntryId);
       });
     }
   };
 
   const onChange = (newState) => {
+    const previousCurrentEntryId = state.currentEntryId;
     Object.assign(state, newState);
+    if (state.currentEntryId !== previousCurrentEntryId) {
+      render(state);
+    }
     render(state);
   };
 
@@ -115,6 +118,7 @@ const app = () => {
 
   const form = document.getElementById('input-form');
   form.addEventListener('submit', handleSubmit);
+
   render();
 
   /// setInterval(async () => {
