@@ -1,5 +1,4 @@
 import fetchInfo from './fetchers.js';
-import { renderErrorMessage } from './renders.js';
 
 async function updateFeeds(state, render) {
   const { feedLinks } = state;
@@ -11,7 +10,6 @@ async function updateFeeds(state, render) {
       currentEntriesCount += entries.length;
     } catch (error) {
       console.error('Error fetching entries:', error);
-      renderErrorMessage('noconnection');
     }
   }
 

@@ -1,8 +1,10 @@
 import i18n from 'i18next';
 import 'bootstrap';
-import { SingleEntryPlugin } from 'webpack';
 
-const initialRender = () => {
+const generateRandomId = () => Math.random().toString(36).substring(2, 15);
+
+const renderForm = (state) => {
+  console.log('form rendering');
   const placeholder = document.querySelector('label[for="url-input"]');
   placeholder.textContent = `${i18n.t('placeholder')}`;
   const button = document.getElementById('add-button');
@@ -12,10 +14,25 @@ const initialRender = () => {
   const header = document.getElementById('rss-header');
   header.textContent = `${i18n.t('title')}`;
   const field = document.getElementById('url-input');
+  state.form.valid ? field.classList.add('valid') : field.classList.add('invalid');
   field.focus();
+  const submitButton = document.querySelector('button[type="submit"]');
+  if (state.loadingStatus === 'loading') {
+    submitButton.disabled = true;
+  } else {
+    submitButton.disabled = false;
+  }
+  const errorMessage = document.getElementById('error-message');
+  if (state.form.error === null) {
+    errorMessage.textContent = '';
+    return;
+  }
+  errorMessage.textContent = `${i18n.t(`error.${state.form.error}`)}`;
 };
 
-const feedListRender = (state) => {
+const renderFeeds = (state) => {
+  console.log('feeds renndering');
+  console.log(state.feeds);
   const feedsContainer = document.querySelector('#feeds');
   feedsContainer.innerHTML = '';
   const feedListTitle = document.createElement('h2');
@@ -37,9 +54,10 @@ const feedListRender = (state) => {
     singleFeed.append(feedTitle, feedSummary);
     feedsContainer.append(singleFeed);
   });
-};
 
-const entriesListRender = (state) => {
+  console.log('posts renndering');
+  console.log(state.entries);
+
   const postsContainer = document.getElementById('posts');
   const entriesListTitle = document.createElement('h2');
   entriesListTitle.classList.add('entries-list-title');
@@ -47,17 +65,20 @@ const entriesListRender = (state) => {
   postsContainer.innerHTML = '';
   postsContainer.appendChild(entriesListTitle);
 
-  const entries = state.feeds ?? [];
-  const allEntries = entries.reduce((acc, feed) => acc.concat(feed.entries), []) ?? [];
+  const allEntries = state.entries;
+  console.log('entries rendered:', allEntries);
   allEntries.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
   allEntries.forEach((entry) => {
     const entryLink = entry?.link ?? '';
     const entryTitle = entry?.title ?? '';
-    const entryId = entry?.guid ?? '';
+    const newId = generateRandomId();
+    const entryId = newId;
+    entry.guid = newId;
 
     const singleEntryContainer = document.createElement('div');
     singleEntryContainer.classList.add('entry-container');
+    singleEntryContainer.setAttribute('postId', entryId);
 
     const entryTitleElement = document.createElement('h2');
     entryTitleElement.classList.add('entry-title');
@@ -69,8 +90,8 @@ const entriesListRender = (state) => {
 
     const readMoreButton = document.createElement('button');
     readMoreButton.classList.add('read-more-button');
-    readMoreButton.setAttribute('postId', entryId);
     readMoreButton.textContent = i18n.t('readmore');
+    readMoreButton.setAttribute('postId', entryId);
 
     singleEntryContainer.appendChild(entryLinkElement);
     singleEntryContainer.appendChild(readMoreButton);
@@ -78,49 +99,33 @@ const entriesListRender = (state) => {
   });
 };
 
-const renderErrorMessage = (type) => {
-  console.log('error being rendered', type);
-  const errorMessage = document.getElementById('error-message');
-  if (type === '') {
-    errorMessage.textContent = '';
+const renderModal = (state) => {
+  console.log('modal being rendered');
+  console.log('stateCurrentId is', state.currentEntryId);
+  const myModal = new bootstrap.Modal(document.getElementById('modalOverlay'));
+
+  if (state.currentEntryId === '0') {
+    myModal.hide();
     return;
   }
-  errorMessage.textContent = `${i18n.t(`error.${type}`)}`;
-  if (type === 'rssloaded') {
-    const inputElement = document.getElementById('url-input');
-    const submitButton = document.querySelector('button[type="submit"]');
-    inputElement.classList.remove('invalid');
-    submitButton.disabled = false;
-    inputElement.value = '';
-    errorMessage.classList.remove('text-danger');
-    errorMessage.classList.add('text-success');
-    console.log('success');
-  }
-  if (type === 'notalink') {
-    const inputElement = document.getElementById('url-input');
-    inputElement.classList.add('invalid');
-  }
-  console.log('error');
-};
 
-const renderButton = (readbutton, state) => {
-  const myModal = new bootstrap.Modal(document.getElementById('modalOverlay'));
-  myModal.show();
   const closeModalButton = document.getElementById('close-modal-btn');
-  closeModalButton.textContent = `${i18n.t('closemodal')}`;
-  const allEntries = state.feeds.reduce((acc, feed) => acc.concat(feed.entries), []);
-  const postID = readbutton.getAttribute('postId');
-  const shownEntry = allEntries.find((obj) => obj.guid === `${postID}`);
-  const title = document.querySelector('.modal-title');
-  title.textContent = `${shownEntry.title}`;
-  const contents = document.querySelector('.modal-descr');
-  contents.textContent = `${shownEntry.content.slice(0, 1000)}`;
-  closeModalButton.addEventListener('click', () => {
-    myModal.hide();
-  });
+  closeModalButton.textContent = i18n.t('closemodal');
+
+  const allEntries = state.entries;
+  const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
+
+  if (shownEntry) {
+    console.log(shownEntry);
+    const title = document.querySelector('.modal-title');
+    title.textContent = shownEntry.title;
+    const contents = document.querySelector('.modal-descr');
+    contents.textContent = shownEntry.content.slice(0, 1000);
+  } else {
+    console.error('Entry with guid not found.');
+  }
+
+  myModal.show();
 };
 
-export {
-  feedListRender, entriesListRender, initialRender,
-  renderErrorMessage, renderButton,
-};
+export { renderForm, renderFeeds, renderModal };
