@@ -20,6 +20,7 @@ const renderForm = (state) => {
   } else {
     field.classList.add('invalid');
   }
+  field.value = '';
   field.focus();
   const submitButton = document.querySelector('button[type="submit"]');
   if (state.loadingStatus === 'loading') {
