@@ -14,10 +14,8 @@ const renderForm = (state) => {
   const header = document.getElementById('rss-header');
   header.textContent = `${i18n.t('title')}`;
   const field = document.getElementById('url-input');
-  field.classList.remove('valid', 'invalid');
-  if (state.form.valid) {
-    field.classList.add('valid');
-  } else {
+  field.classList.remove('invalid');
+  if (!state.form.valid) {
     field.classList.add('invalid');
   }
   field.value = '';

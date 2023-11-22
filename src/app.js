@@ -142,9 +142,9 @@ const app = () => {
 
   render();
 
-  /// setInterval(async () => {
-  ///  await updateFeeds(state, render);
-  /// }, 6000);
+  setInterval(async () => {
+    await updateFeeds(state, render, onChange);
+  }, 6000);
 };
 
 export default app;
