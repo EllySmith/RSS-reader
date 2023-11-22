@@ -13,9 +13,6 @@ async function updateFeeds(state, render) {
       currentEntriesCount += feedEntries.length;
     } catch (error) {
       console.error('Error fetching entries:', error);
-      state.form.error = 'noconnnection';
-      state.form.valid = true;
-      onChange(state);
       return;
     }
   }

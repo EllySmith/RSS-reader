@@ -71,9 +71,8 @@ const renderFeeds = (state) => {
   allEntries.forEach((entry) => {
     const entryLink = entry?.link ?? '';
     const entryTitle = entry?.title ?? '';
-    const newId = generateRandomId();
+    const newId = entry?.guid || generateRandomId();
     const entryId = newId;
-    entry.guid = newId;
 
     const singleEntryContainer = document.createElement('div');
     singleEntryContainer.classList.add('entry-container');

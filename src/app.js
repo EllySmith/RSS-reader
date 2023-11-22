@@ -143,8 +143,13 @@ const app = () => {
   render();
 
   setInterval(async () => {
-    await updateFeeds(state, render, onChange);
-  }, 6000);
+    try {
+      await updateFeeds(state, render);
+    } catch (error) {
+      state.form.error = 'noconnection';
+      onChange(state);
+    }
+  }, 60000);
 };
 
 export default app;
