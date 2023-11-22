@@ -15,7 +15,7 @@ const app = () => {
     entries: [],
     currentEntryId: '0',
     seenPosts: [],
-    loadingStatus: 'loaded',
+    loadingStatus: 'success',
     form: {
       error: null,
       valid: true,
@@ -44,6 +44,7 @@ const app = () => {
           state.currentEntryId = postId;
           console.log('read more click');
           console.log('currentpostid changed to', state.currentEntryId);
+          console.log(state);
         });
       });
 
@@ -52,18 +53,33 @@ const app = () => {
         state.currentEntryId = '0';
         console.log('close modal click');
         console.log('currentpostid changed to', state.currentEntryId);
+        console.log(state);
       });
     }
   };
 
   const onChange = (newState) => {
-    const previousCurrentEntryId = state.currentEntryId;
     Object.assign(state, newState);
-    if (state.currentEntryId !== previousCurrentEntryId) {
-      render(state);
-    }
     render(state);
   };
+
+  const readMore = document.getElementsByClassName('read-more-button');
+  const readMoreArray = [...readMore];
+  readMoreArray.forEach((readbutton) => {
+    readbutton.addEventListener('click', () => {
+      const postId = readbutton.getAttribute('postId');
+      state.currentEntryId = postId;
+      console.log(state);
+      onChange(state);
+    });
+  });
+
+  const closeModalButton = document.getElementById('close-modal-btn');
+  closeModalButton.addEventListener('click', () => {
+    state.currentEntryId = '0';
+    console.log('close modal click');
+    console.log('currentpostid changed to', state.currentEntryId);
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -91,6 +107,9 @@ const app = () => {
       return;
     }
 
+    state.loadingStatus = 'loading';
+    onChange(state);
+
     fetchInfo(rssLink, 'title')
       .then((title) => fetchInfo(rssLink, 'description')
         .then((description) => fetchInfo(rssLink, 'entries')
@@ -105,13 +124,15 @@ const app = () => {
             onChange({
               feeds: [...state.feeds, newFeed],
               entries: [...state.entries, ...newFeed.entries],
-              currentPostId: 0,
-              loadingStatus: 'loaded',
+              currentEntryId: 0,
+              loadingStatus: 'success',
               form: { error: 'rssloaded', valid: true },
             });
           })))
       .catch((error) => {
         console.error('Error:', error);
+        state.form.error = 'notanrss';
+        state.loadingStatus = 'error';
         onChange(state);
       });
   };

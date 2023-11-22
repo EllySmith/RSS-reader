@@ -14,7 +14,12 @@ const renderForm = (state) => {
   const header = document.getElementById('rss-header');
   header.textContent = `${i18n.t('title')}`;
   const field = document.getElementById('url-input');
-  state.form.valid ? field.classList.add('valid') : field.classList.add('invalid');
+  field.classList.remove('valid', 'invalid');
+  if (state.form.valid) {
+    field.classList.add('valid');
+  } else {
+    field.classList.add('invalid');
+  }
   field.focus();
   const submitButton = document.querySelector('button[type="submit"]');
   if (state.loadingStatus === 'loading') {
@@ -96,28 +101,20 @@ const renderFeeds = (state) => {
   console.log('modal being rendered');
   console.log('stateCurrentId is', state.currentEntryId);
   const myModal = new bootstrap.Modal(document.getElementById('modalOverlay'));
-
-  if (state.currentEntryId === '0') {
-    myModal.hide();
-    return;
-  }
-
   const closeModalButton = document.getElementById('close-modal-btn');
   closeModalButton.textContent = i18n.t('closemodal');
-
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
 
   if (shownEntry) {
-    console.log(shownEntry);
+    console.log('shown entry', shownEntry);
     const title = document.querySelector('.modal-title');
     title.textContent = shownEntry.title;
     const contents = document.querySelector('.modal-descr');
     contents.textContent = shownEntry.content.slice(0, 1000);
+    myModal.show();
   } else {
-    console.error('Entry with guid not found.');
+    myModal.hide();
   }
-
-  myModal.show();
 };
 
 export { renderForm, renderFeeds };
