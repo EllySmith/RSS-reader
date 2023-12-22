@@ -98,20 +98,28 @@ const renderFeeds = (state) => {
 
   console.log('modal being rendered');
   console.log('stateCurrentId is', state.currentEntryId);
-  const myModal = new bootstrap.Modal(document.getElementById('modalOverlay'));
+  const myModal = document.getElementById('modalOverlay');
   const closeModalButton = document.getElementById('close-modal-btn');
   closeModalButton.textContent = i18n.t('closemodal');
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
 
-  if (shownEntry) {
+  if (shownEntry && state.currentEntryId !== '0') {
     console.log('shown entry', shownEntry);
+    console.log('curent entry id', state.currentEntryId);
     const title = document.querySelector('.modal-title');
     title.textContent = shownEntry.title;
     const contents = document.querySelector('.modal-descr');
     contents.textContent = shownEntry.content.slice(0, 1000);
-    myModal.show();
+    myModal.classList.add('show');
+    myModal.setAttribute('aria-modal', 'true');
+    myModal.setAttribute('style', 'display: block;');
+    myModal.removeAttribute('aria-hidden');
   } else {
-    myModal.hide();
+    console.log('entry undefined');
+    myModal.setAttribute('aria-hidden', 'true');
+    myModal.setAttribute('style', 'display: none;');
+    myModal.classList.remove('show');
+    myModal.removeAttribute('aria-modal');
   }
 };
 

@@ -1,4 +1,5 @@
 import i18n from 'i18next';
+import onChange from 'on-change';
 import rus from './locales/rus.js';
 import {
   renderForm, renderFeeds,
@@ -31,6 +32,15 @@ const app = () => {
     },
   });
 
+  const changeModalId = (button) => {
+    const postId = button.getAttribute('postId');
+    watchedState.currentEntryId = postId;
+  };
+
+  const zeroModalId = () => {
+    watchedState.currentEntryId = '0';
+  };
+
   const render = () => {
     renderForm(state);
     if (state.feeds.length > 0) {
@@ -39,76 +49,42 @@ const app = () => {
       const readMoreArray = [...readMore];
       console.log('read more array', readMoreArray);
       readMoreArray.forEach((readbutton) => {
-        readbutton.addEventListener('click', () => {
-          const postId = readbutton.getAttribute('postId');
-          state.currentEntryId = postId;
-          console.log('read more click');
-          console.log('currentpostid changed to', state.currentEntryId);
-          console.log(state);
-        });
-      });
-
-      const closeModalButton = document.getElementById('close-modal-btn');
-      closeModalButton.addEventListener('click', () => {
-        state.currentEntryId = '0';
-        console.log('close modal click');
-        console.log('currentpostid changed to', state.currentEntryId);
-        console.log(state);
+        readbutton.addEventListener('click', changeModalId(readbutton));
       });
     }
-  };
 
-  const onChange = (newState) => {
-    Object.assign(state, newState);
-    render(state);
-  };
-
-  const readMore = document.getElementsByClassName('read-more-button');
-  const readMoreArray = [...readMore];
-  readMoreArray.forEach((readbutton) => {
-    readbutton.addEventListener('click', () => {
-      const postId = readbutton.getAttribute('postId');
-      state.currentEntryId = postId;
-      console.log(state);
-      onChange(state);
+    const closeModalButton = document.getElementById('close-modal-btn');
+    closeModalButton.addEventListener('click', () => {
+      zeroModalId();
     });
-  });
+  };
 
-  const closeModalButton = document.getElementById('close-modal-btn');
-  closeModalButton.addEventListener('click', () => {
-    state.currentEntryId = '0';
-    console.log('close modal click');
-    console.log('currentpostid changed to', state.currentEntryId);
-  });
+  const watchedState = onChange(state, render);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const inputElement = document.getElementById('url-input');
-    const rssLink = inputElement.value;
+    const formData = new FormData(e.target);
+    const rssLink = formData.get('url');
 
     if (!urlValidator(rssLink)) {
-      state.form.error = 'notalink';
-      state.form.valid = false;
-      onChange(state);
+      watchedState.form.error = 'notalink';
+      watchedState.form.valid = false;
       return;
     }
 
     if (!rssValidator(rssLink)) {
-      state.form.error = 'notanrss';
-      state.form.valid = true;
-      onChange(state);
+      watchedState.form.error = 'notanrss';
+      watchedState.form.valid = true;
       return;
     }
 
     if (state.feeds.find((feed) => feed.link === rssLink)) {
-      state.form.error = 'exists';
-      state.form.valid = true;
-      onChange(state);
+      watchedState.form.error = 'exists';
+      watchedState.form.valid = true;
       return;
     }
 
-    state.loadingStatus = 'loading';
-    onChange(state);
+    watchedState.loadingStatus = 'loading';
 
     fetchInfo(rssLink, 'title')
       .then((title) => fetchInfo(rssLink, 'description')
@@ -121,19 +97,17 @@ const app = () => {
               description,
               entries,
             };
-            onChange({
-              feeds: [...state.feeds, newFeed],
-              entries: [...state.entries, ...newFeed.entries],
-              currentEntryId: 0,
-              loadingStatus: 'success',
-              form: { error: 'rssloaded', valid: true },
-            });
+
+            watchedState.feeds = [...state.feeds, newFeed];
+            watchedState.entries = [...state.entries, ...newFeed.entries];
+            watchedState.currentEntryId = '0';
+            watchedState.loadingStatus = 'success';
+            watchedState.form = { error: 'rssloaded', valid: true };
           })))
       .catch((error) => {
         console.error('Error:', error);
-        state.form.error = 'notanrss';
-        state.loadingStatus = 'error';
-        onChange(state);
+        watchedState.form.error = 'notanrss';
+        watchedState.loadingStatus = 'error';
       });
   };
 
