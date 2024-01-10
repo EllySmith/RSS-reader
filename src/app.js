@@ -43,7 +43,7 @@ const app = () => {
       case 'feeds':
         renderFeeds(state);
         break;
-      case 'seenPosts':
+      case 'viewedPosts':
         renderEntries(state);
         break;
       case 'currentEntryId':

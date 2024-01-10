@@ -60,6 +60,7 @@ const renderFeeds = (state) => {
 };
 
 const renderEntries = (state) => {
+  console.log(state.viewedPosts);
   const postsContainer = document.getElementById('posts');
   const entriesListTitle = document.createElement('h2');
   entriesListTitle.classList.add('entries-list-title');
@@ -81,8 +82,11 @@ const renderEntries = (state) => {
     singleEntryContainer.setAttribute('postId', entryId);
 
     const entryTitleElement = document.createElement('h2');
-    entryTitleElement.classList.add('entry-title');
     entryTitleElement.textContent = entryTitle;
+    if (state.viewedPosts.includes(entryId)) {
+      entryTitleElement.classList.add('viewed');
+    }
+    entryTitleElement.classList.add('entry-title');
 
     const entryLinkElement = document.createElement('a');
     entryLinkElement.href = entryLink;
@@ -107,26 +111,19 @@ const renderModal = (state) => {
   const readMore = document.querySelector('.full-article');
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
 
-  if (shownEntry && state.currentEntryId !== '0') {
-    console.log('shown entry', shownEntry);
-    console.log('curent entry id', state.currentEntryId);
-    readMore.textContent = `${i18n.t('readmore')}`;
-    readMore.setAttribute('href', shownEntry.link);
-    const title = document.querySelector('.modal-title');
-    title.textContent = shownEntry.title;
-    const contents = document.querySelector('.modal-body');
-    contents.textContent = shownEntry.content.slice(0, 1000);
-    myModal.classList.add('show');
-    myModal.setAttribute('aria-modal', 'true');
-    myModal.setAttribute('style', 'display: block;');
-    myModal.removeAttribute('aria-hidden');
-  } else {
-    console.log('entry undefined');
-    myModal.setAttribute('aria-hidden', 'true');
-    myModal.setAttribute('style', 'display: none;');
-    myModal.classList.remove('show');
-    myModal.removeAttribute('aria-modal');
-  }
+  console.log('shown entry', shownEntry);
+  console.log('curent entry id', state.currentEntryId);
+  console.log(state.viewedPosts);
+  readMore.textContent = `${i18n.t('readmore')}`;
+  readMore.setAttribute('href', shownEntry.link);
+  const title = document.querySelector('.modal-title');
+  title.textContent = shownEntry.title;
+  const contents = document.querySelector('.modal-body');
+  contents.textContent = shownEntry.content.slice(0, 1000);
+  myModal.classList.add('show');
+  myModal.setAttribute('aria-modal', 'true');
+  myModal.setAttribute('style', 'display: block;');
+  myModal.removeAttribute('aria-hidden');
 };
 
 export {

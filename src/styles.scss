@@ -84,9 +84,14 @@ button[type="submit"]:disabled:hover {
   flex: 1; 
 }
 
+
 .entry-title {
   font-size:larger;
   line-height: 1.5;
+}
+
+.entry-title.viewed {
+  color: rgb(229, 194, 154);
 }
 
 .read-more-button {
