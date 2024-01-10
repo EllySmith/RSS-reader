@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import onChange from 'on-change';
 import rus from './locales/rus.js';
 import {
-  renderForm, renderFeeds,
+  renderForm, renderFeeds, renderEntries, renderModal,
 } from './renders.js';
 import fetchInfo from './fetchers.js';
 import {
@@ -32,6 +32,31 @@ const app = () => {
     },
   });
 
+  const watchedState = onChange(state, (path) => {
+    switch (path) {
+      case 'form':
+        renderForm(state);
+        break;
+      case 'entries':
+        renderEntries(state);
+        break;
+      case 'feeds':
+        renderFeeds(state);
+        break;
+      case 'seenPosts':
+        renderEntries(state);
+        break;
+      case 'currentEntryId':
+        renderModal(state);
+        break;
+      case 'loadingStatus':
+        renderForm(state);
+        break;
+      default:
+        break;
+    }
+  });
+
   const changeModalId = (button) => {
     const postId = button.getAttribute('postId');
     watchedState.currentEntryId = postId;
@@ -45,21 +70,21 @@ const app = () => {
     renderForm(state);
     if (state.feeds.length > 0) {
       renderFeeds(state);
+      renderEntries(state);
       const readMore = document.getElementsByClassName('read-more-button');
       const readMoreArray = [...readMore];
       console.log('read more array', readMoreArray);
       readMoreArray.forEach((readbutton) => {
         readbutton.addEventListener('click', changeModalId(readbutton));
       });
+      const closeModalButton = document.getElementById('close-modal-btn');
+      closeModalButton.addEventListener('click', () => {
+        zeroModalId();
+      });
     }
 
-    const closeModalButton = document.getElementById('close-modal-btn');
-    closeModalButton.addEventListener('click', () => {
-      zeroModalId();
-    });
+    renderModal(state);
   };
-
-  const watchedState = onChange(state, render);
 
   const handleSubmit = (e) => {
     e.preventDefault();

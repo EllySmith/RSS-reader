@@ -57,7 +57,9 @@ const renderFeeds = (state) => {
     singleFeed.append(feedTitle, feedSummary);
     feedsContainer.append(singleFeed);
   });
+};
 
+const renderEntries = (state) => {
   const postsContainer = document.getElementById('posts');
   const entriesListTitle = document.createElement('h2');
   entriesListTitle.classList.add('entries-list-title');
@@ -95,9 +97,9 @@ const renderFeeds = (state) => {
     singleEntryContainer.appendChild(readMoreButton);
     postsContainer.appendChild(singleEntryContainer);
   });
+};
 
-  console.log('modal being rendered');
-  console.log('stateCurrentId is', state.currentEntryId);
+const renderModal = (state) => {
   const myModal = document.getElementById('modalOverlay');
   const closeModalButton = document.getElementById('close-modal-btn');
   closeModalButton.textContent = i18n.t('closemodal');
@@ -123,4 +125,6 @@ const renderFeeds = (state) => {
   }
 };
 
-export { renderForm, renderFeeds };
+export {
+  renderForm, renderFeeds, renderEntries, renderModal,
+};
