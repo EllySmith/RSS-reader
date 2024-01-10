@@ -15,7 +15,7 @@ const app = () => {
     feeds: [],
     entries: [],
     currentEntryId: '0',
-    seenPosts: [],
+    viewedPosts: [],
     loadingStatus: 'success',
     form: {
       error: null,
@@ -57,34 +57,25 @@ const app = () => {
     }
   });
 
-  const changeModalId = (button) => {
-    const postId = button.getAttribute('postId');
-    watchedState.currentEntryId = postId;
-  };
-
-  const zeroModalId = () => {
-    watchedState.currentEntryId = '0';
-  };
-
   const render = () => {
     renderForm(state);
     if (state.feeds.length > 0) {
       renderFeeds(state);
       renderEntries(state);
-      const readMore = document.getElementsByClassName('read-more-button');
-      const readMoreArray = [...readMore];
-      console.log('read more array', readMoreArray);
-      readMoreArray.forEach((readbutton) => {
-        readbutton.addEventListener('click', changeModalId(readbutton));
-      });
-      const closeModalButton = document.getElementById('close-modal-btn');
-      closeModalButton.addEventListener('click', () => {
-        zeroModalId();
-      });
     }
-
     renderModal(state);
   };
+
+  const postsContainer = document.getElementById('posts');
+  postsContainer.addEventListener('click', (e) => {
+    if (!e.target.dataset.id) {
+      return;
+    }
+    watchedState.currentEntryId = e.target.dataset.id;
+    if (!watchedState.viewedPosts.includes(e.target.dataset.id)) {
+      watchedState.viewedPosts.push(e.target.dataset.id);
+    }
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -89,9 +89,11 @@ const renderEntries = (state) => {
     entryLinkElement.appendChild(entryTitleElement);
 
     const readMoreButton = document.createElement('button');
+    readMoreButton.setAttribute('data-id', entryId);
     readMoreButton.classList.add('read-more-button');
+    readMoreButton.setAttribute('data-bs-toggle', 'modal');
+    readMoreButton.setAttribute('data-bs-target', '#modal');
     readMoreButton.textContent = i18n.t('readmore');
-    readMoreButton.setAttribute('postId', entryId);
 
     singleEntryContainer.appendChild(entryLinkElement);
     singleEntryContainer.appendChild(readMoreButton);
@@ -100,17 +102,19 @@ const renderEntries = (state) => {
 };
 
 const renderModal = (state) => {
-  const myModal = document.getElementById('modalOverlay');
-  const closeModalButton = document.getElementById('close-modal-btn');
-  closeModalButton.textContent = i18n.t('closemodal');
+  const allEntries = state.entries;
+  const myModal = document.getElementById('modal');
+  const readMore = document.querySelector('.full-article');
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
 
   if (shownEntry && state.currentEntryId !== '0') {
     console.log('shown entry', shownEntry);
     console.log('curent entry id', state.currentEntryId);
+    readMore.textContent = `${i18n.t('readmore')}`;
+    readMore.setAttribute('href', shownEntry.link);
     const title = document.querySelector('.modal-title');
     title.textContent = shownEntry.title;
-    const contents = document.querySelector('.modal-descr');
+    const contents = document.querySelector('.modal-body');
     contents.textContent = shownEntry.content.slice(0, 1000);
     myModal.classList.add('show');
     myModal.setAttribute('aria-modal', 'true');
