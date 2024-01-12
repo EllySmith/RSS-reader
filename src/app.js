@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import onChange from 'on-change';
 import rus from './locales/rus.js';
 import {
-  renderForm, renderFeeds, renderEntries, renderModal,
+  renderForm, renderFeeds, renderEntries, renderModal, renderError,
 } from './renders.js';
 import fetchData from './fetchers.js';
 import {
@@ -35,23 +35,30 @@ const app = () => {
 
   const watchedState = onChange(state, (path) => {
     switch (path) {
-      case 'form':
-        renderForm(state);
+      case 'form.error':
+        renderError(state);
+        console.log(state);
         break;
       case 'entries':
         renderEntries(state);
+        console.log(state);
         break;
       case 'feeds':
         renderFeeds(state);
+        console.log(state);
         break;
       case 'viewedPosts':
         renderEntries(state);
+        console.log(state);
         break;
       case 'currentEntryId':
         renderModal(state);
+        console.log(state);
         break;
       case 'loadingStatus':
         renderForm(state);
+        renderError(state);
+        console.log(state);
         break;
       default:
         break;
@@ -60,6 +67,9 @@ const app = () => {
 
   const render = () => {
     renderForm(state);
+    if (state.form.error !== null) {
+      renderError(state);
+    }
     if (state.feeds.length > 0) {
       renderFeeds(state);
       renderEntries(state);
@@ -84,21 +94,33 @@ const app = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const rssLink = formData.get('url');
+    if (state.feedLinks.includes(rssLink)) {
+      watchedState.form.error = 'exists';
+      watchedState.form.valid = false;
+      watchedState.loadingStatus = 'error';
+      return;
+    }
     watchedState.loadingStatus = 'loading';
-    validateURL(rssLink, state.feedLinks)
+
+    validateURL(rssLink)
       .then(() => fetchData(rssLink))
       .then((data) => {
         const newFeed = parseData(data);
-        console.log('newFeed', newFeed);
         watchedState.feeds = [...state.feeds, newFeed];
         watchedState.entries = [...state.entries, ...newFeed.entries];
-        watchedState.feedLinks = [...state.feedLinks, ...newFeed.link];
+        watchedState.feedLinks = [...state.feedLinks, rssLink];
         watchedState.currentEntryId = '0';
         watchedState.loadingStatus = 'success';
         watchedState.form = { error: 'rssloaded', valid: true };
       })
-      .catch((error) => {
-        console.error('Error:', error);
+      .catch((validationError) => {
+        console.error(validationError);
+        watchedState.form.error = 'notalink';
+        watchedState.form.valid = false;
+        watchedState.loadingStatus = 'error';
+      })
+      .catch((fetchError) => {
+        console.error(fetchError);
         watchedState.form.error = 'notanrss';
         watchedState.loadingStatus = 'error';
       });

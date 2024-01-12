@@ -1,25 +1,27 @@
 import * as yup from 'yup';
 
-const validateURL = (url, links) => {
-  const currentUserSchema = yup.string().url().required().notOneOf(links);
+const validateURL = (url) => {
+  const currentUserSchema = yup.string().url().required();
   return currentUserSchema
     .validate(url)
     .then(() => null)
-    .catch((e) => e.message);
+    .catch((e) => {
+      throw new Error('Invalid URL');
+    });
 };
 
 const parseData = (data) => {
   console.log(data);
 
   const {
-    link, title, description, entries,
+    link, title, description, items,
   } = data;
 
   const newEntry = {
     link,
     title,
     description,
-    entries,
+    entries: items,
   };
 
   return newEntry;

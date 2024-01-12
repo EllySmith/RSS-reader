@@ -26,11 +26,11 @@ const renderForm = (state) => {
   } else {
     submitButton.disabled = false;
   }
+};
+
+const renderError = (state) => {
+  console.log('error rendering', state.form.error);
   const errorMessage = document.getElementById('error-message');
-  if (state.form.error === null) {
-    errorMessage.textContent = '';
-    return;
-  }
   errorMessage.textContent = `${i18n.t(`error.${state.form.error}`)}`;
 };
 
@@ -127,5 +127,5 @@ const renderModal = (state) => {
 };
 
 export {
-  renderForm, renderFeeds, renderEntries, renderModal,
+  renderForm, renderFeeds, renderEntries, renderModal, renderError,
 };
