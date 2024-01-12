@@ -127,6 +127,15 @@ const app = () => {
       });
   };
 
+  setInterval(async () => {
+    try {
+      await updateFeeds(state, render);
+    } catch (error) {
+      state.form.error = 'noconnection';
+      state.loadingStatus = 'error';
+    }
+  }, 6000);
+
   const form = document.getElementById('input-form');
   form.addEventListener('submit', handleSubmit);
 

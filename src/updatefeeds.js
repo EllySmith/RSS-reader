@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-syntax */
-import fetchInfo from './fetchers.js';
+import fetchData from './fetchers.js';
 
 async function updateFeeds(state, render) {
   const { entries: currentEntries } = state;
@@ -9,7 +9,8 @@ async function updateFeeds(state, render) {
   const feedLinks = feeds.map((feed) => feed.link);
   for (const feedLink of feedLinks) {
     try {
-      const feedEntries = await fetchInfo(feedLink, 'entries');
+      const feed = await fetchData(feedLink);
+      const feedEntries = feed.items;
       currentEntriesCount += feedEntries.length;
     } catch (error) {
       console.error('Error fetching entries:', error);
