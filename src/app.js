@@ -19,7 +19,7 @@ const app = () => {
     viewedPosts: [],
     loadingStatus: 'success',
     form: {
-      error: null,
+      error: 'none',
       valid: true,
     },
   };
@@ -67,9 +67,7 @@ const app = () => {
 
   const render = () => {
     renderForm(state);
-    if (state.form.error !== null) {
-      renderError(state);
-    }
+    renderError(state);
     if (state.feeds.length > 0) {
       renderFeeds(state);
       renderEntries(state);
@@ -96,7 +94,7 @@ const app = () => {
     const rssLink = formData.get('url');
     if (state.feedLinks.includes(rssLink)) {
       watchedState.form.error = 'exists';
-      watchedState.form.valid = false;
+      watchedState.form.valid = true;
       watchedState.loadingStatus = 'error';
       return;
     }
@@ -111,7 +109,8 @@ const app = () => {
         watchedState.feedLinks = [...state.feedLinks, rssLink];
         watchedState.currentEntryId = '0';
         watchedState.loadingStatus = 'success';
-        watchedState.form = { error: 'rssloaded', valid: true };
+        watchedState.form.error = 'rssloaded';
+        watchedState.form.valid = true;
       })
       .catch((validationError) => {
         console.error(validationError);
@@ -122,6 +121,7 @@ const app = () => {
       .catch((fetchError) => {
         console.error(fetchError);
         watchedState.form.error = 'notanrss';
+        watchedState.form.valid = true;
         watchedState.loadingStatus = 'error';
       });
   };

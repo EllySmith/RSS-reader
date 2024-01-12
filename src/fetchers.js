@@ -14,7 +14,6 @@ const fetchData = async (link) => {
     console.log('fetched data', feed);
     return feed;
   }
-  throw new Error();
 };
 
 export default fetchData;
