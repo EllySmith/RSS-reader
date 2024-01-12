@@ -32,6 +32,11 @@ const renderError = (state) => {
   console.log('error rendering', state.form.error);
   const errorMessage = document.getElementById('error-message');
   errorMessage.textContent = `${i18n.t(`error.${state.form.error}`)}`;
+  if (state.loadingStatus === 'success') {
+    errorMessage.classList.remove('text-danger');
+  } else {
+    errorMessage.classList.add('text-danger');
+  }
 };
 
 const renderFeeds = (state) => {

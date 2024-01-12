@@ -112,16 +112,17 @@ const app = () => {
         watchedState.form.error = 'rssloaded';
         watchedState.form.valid = true;
       })
-      .catch((validationError) => {
-        console.error(validationError);
-        watchedState.form.error = 'notalink';
-        watchedState.form.valid = false;
-        watchedState.loadingStatus = 'error';
-      })
-      .catch((fetchError) => {
-        console.error(fetchError);
-        watchedState.form.error = 'notanrss';
-        watchedState.form.valid = true;
+      .catch((error) => {
+        console.error('Error:', error);
+
+        if (error.message === 'Invalid URL') {
+          watchedState.form.error = 'notalink';
+          watchedState.form.valid = false;
+        } else {
+          watchedState.form.error = 'notanrss';
+          watchedState.form.valid = true;
+        }
+
         watchedState.loadingStatus = 'error';
       });
   };
