@@ -4,15 +4,16 @@ import rus from './locales/rus.js';
 import {
   renderForm, renderFeeds, renderEntries, renderModal,
 } from './renders.js';
-import fetchInfo from './fetchers.js';
+import fetchData from './fetchers.js';
 import {
-  rssValidator, repeatValidator, urlValidator,
-} from './validators.js';
+  validateURL, parseData,
+} from './utils.js';
 import updateFeeds from './updatefeeds.js';
 
 const app = () => {
   const state = {
     feeds: [],
+    feedLinks: [],
     entries: [],
     currentEntryId: '0',
     viewedPosts: [],
@@ -63,7 +64,9 @@ const app = () => {
       renderFeeds(state);
       renderEntries(state);
     }
-    renderModal(state);
+    if (state.currentEntryId !== '0') {
+      renderModal(state);
+    }
   };
 
   const postsContainer = document.getElementById('posts');
@@ -81,45 +84,19 @@ const app = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const rssLink = formData.get('url');
-
-    if (!urlValidator(rssLink)) {
-      watchedState.form.error = 'notalink';
-      watchedState.form.valid = false;
-      return;
-    }
-
-    if (!rssValidator(rssLink)) {
-      watchedState.form.error = 'notanrss';
-      watchedState.form.valid = true;
-      return;
-    }
-
-    if (state.feeds.find((feed) => feed.link === rssLink)) {
-      watchedState.form.error = 'exists';
-      watchedState.form.valid = true;
-      return;
-    }
-
     watchedState.loadingStatus = 'loading';
-
-    fetchInfo(rssLink, 'title')
-      .then((title) => fetchInfo(rssLink, 'description')
-        .then((description) => fetchInfo(rssLink, 'entries')
-          .then((entries) => {
-            const newFeed = {
-              link: rssLink,
-              id: state.feeds.length + 1,
-              title,
-              description,
-              entries,
-            };
-
-            watchedState.feeds = [...state.feeds, newFeed];
-            watchedState.entries = [...state.entries, ...newFeed.entries];
-            watchedState.currentEntryId = '0';
-            watchedState.loadingStatus = 'success';
-            watchedState.form = { error: 'rssloaded', valid: true };
-          })))
+    validateURL(rssLink, state.feedLinks)
+      .then(() => fetchData(rssLink))
+      .then((data) => {
+        const newFeed = parseData(data);
+        console.log('newFeed', newFeed);
+        watchedState.feeds = [...state.feeds, newFeed];
+        watchedState.entries = [...state.entries, ...newFeed.entries];
+        watchedState.feedLinks = [...state.feedLinks, ...newFeed.link];
+        watchedState.currentEntryId = '0';
+        watchedState.loadingStatus = 'success';
+        watchedState.form = { error: 'rssloaded', valid: true };
+      })
       .catch((error) => {
         console.error('Error:', error);
         watchedState.form.error = 'notanrss';
@@ -131,15 +108,6 @@ const app = () => {
   form.addEventListener('submit', handleSubmit);
 
   render();
-
-  setInterval(async () => {
-    try {
-      await updateFeeds(state, render);
-    } catch (error) {
-      state.form.error = 'noconnection';
-      onChange(state);
-    }
-  }, 60000);
 };
 
 export default app;

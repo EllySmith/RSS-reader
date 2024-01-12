@@ -60,7 +60,7 @@ const renderFeeds = (state) => {
 };
 
 const renderEntries = (state) => {
-  console.log(state.viewedPosts);
+  console.log('entries rendering');
   const postsContainer = document.getElementById('posts');
   const entriesListTitle = document.createElement('h2');
   entriesListTitle.classList.add('entries-list-title');
@@ -70,7 +70,6 @@ const renderEntries = (state) => {
 
   const allEntries = state.entries;
   allEntries.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-  console.log('entries renderig');
   allEntries.forEach((entry) => {
     const entryLink = entry?.link ?? '';
     const entryTitle = entry?.title ?? '';
@@ -107,6 +106,7 @@ const renderEntries = (state) => {
 
 const renderModal = (state) => {
   const allEntries = state.entries;
+  console.log(allEntries);
   const myModal = document.getElementById('modal');
   const readMore = document.querySelector('.full-article');
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
