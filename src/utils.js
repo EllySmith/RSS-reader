@@ -26,18 +26,4 @@ const parseData = (data) => {
   return newEntry;
 };
 
-const updateFeedItems = async (obj, link) => {
-  try {
-    const data = await fetchData(link);
-    const updatedFeed = parseData(data);
-    const index = obj.feeds.findIndex(feed => feed.link === link);
-
-    if (index !== -1) {
-      obj.feeds[index] = updatedFeed;
-    }
-  } catch (error) {
-    console.error('Error updating feed items:', error);
-  }
-};
-
-export { validateURL, parseData, updateFeedItems };
+export { validateURL, parseData };

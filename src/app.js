@@ -7,7 +7,7 @@ import {
 } from './renders.js';
 import fetchData from './fetchers.js';
 import {
-  validateURL, parseData, updateFeedItems,
+  validateURL, parseData,
 } from './utils.js';
 
 const app = () => {
