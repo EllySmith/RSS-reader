@@ -118,10 +118,7 @@ const app = () => {
         if (error.message === 'Invalid URL') {
           watchedState.form.error = 'notalink';
           watchedState.form.valid = false;
-        } else if (error.message === 'Feed not recognized as RSS 1 or 2.') {
-          watchedState.form.error = 'notanrss';
-          watchedState.form.valid = true;
-        } else if (error.message === 'Load failed') {
+        } else {
           watchedState.form.error = 'notanrss';
           watchedState.form.valid = true;
         }
