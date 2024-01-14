@@ -147,10 +147,11 @@ const app = () => {
       .catch(() => {
         watchedState.form.error = 'noconnection';
         watchedState.form.valid = true;
+        watchedState.loadingStatus = 'error';
       }));
 
     return Promise.all(promisesFeeds)
-      .finally(() => setTimeout(() => checkForNewEntries(state), 10000));
+      .finally(() => setTimeout(() => checkForNewEntries(state), 3000));
   };
 
   checkForNewEntries(state);
