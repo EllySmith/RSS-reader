@@ -1,14 +1,14 @@
 import i18n from 'i18next';
 import onChange from 'on-change';
+import axios from 'axios';
 import rus from './locales/rus.js';
 import {
   renderForm, renderFeeds, renderEntries, renderModal, renderError,
 } from './renders.js';
 import fetchData from './fetchers.js';
 import {
-  validateURL, parseData,
+  validateURL, parseData, updateFeedItems,
 } from './utils.js';
-import updateFeeds from './updatefeeds.js';
 
 const app = () => {
   const state = {
@@ -127,19 +127,33 @@ const app = () => {
       });
   };
 
-  setInterval(async () => {
-    try {
-      await updateFeeds(state, render);
-    } catch (error) {
-      state.form.error = 'noconnection';
-      state.loadingStatus = 'error';
-    }
-  }, 6000);
-
   const form = document.getElementById('input-form');
   form.addEventListener('submit', handleSubmit);
 
   render();
+
+  const checkForNewEntries = (state) => {
+    console.log('update');
+    const promisesFeeds = state.feedLinks.map((feedLink) => fetchData(feedLink)
+      .then((data) => {
+        const parsedData = parseData(data);
+        const currentFeed = state.feeds.find((feed) => feed.link === feedLink);
+        const currentFeedIndex = state.feeds.findIndex((feed) => feed.link === feedLink);
+
+        if (currentFeed && parsedData.items.length > currentFeed.entries.length) {
+          state.feeds[currentFeedIndex].entries = parsedData.entries;
+        }
+      })
+      .catch(() => {
+        watchedState.form.error = 'noconnection';
+        watchedState.form.valid = true;
+      }));
+
+    return Promise.all(promisesFeeds)
+      .finally(() => setTimeout(() => checkForNewEntries(state), 10000));
+  };
+
+  checkForNewEntries(state);
 };
 
 export default app;

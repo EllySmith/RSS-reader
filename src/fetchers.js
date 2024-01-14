@@ -11,7 +11,6 @@ const fetchData = async (link) => {
     const data = await response.json();
     const parser = new Parser();
     const feed = await parser.parseString(data.contents);
-    console.log('fetched data', feed);
     return feed;
   }
   throw new Error();

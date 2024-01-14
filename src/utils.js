@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import fetchData from './fetchers';
 
 const validateURL = (url) => {
   const currentUserSchema = yup.string().url().required();
@@ -11,8 +12,6 @@ const validateURL = (url) => {
 };
 
 const parseData = (data) => {
-  console.log(data);
-
   const {
     link, title, description, items,
   } = data;
@@ -27,4 +26,18 @@ const parseData = (data) => {
   return newEntry;
 };
 
-export { validateURL, parseData };
+const updateFeedItems = async (obj, link) => {
+  try {
+    const data = await fetchData(link);
+    const updatedFeed = parseData(data);
+    const index = obj.feeds.findIndex(feed => feed.link === link);
+
+    if (index !== -1) {
+      obj.feeds[index] = updatedFeed;
+    }
+  } catch (error) {
+    console.error('Error updating feed items:', error);
+  }
+};
+
+export { validateURL, parseData, updateFeedItems };
