@@ -148,7 +148,11 @@ const app = () => {
         }
       })
       .catch((error) => {
-        console.error('Error:', error);
+        if (error.message.toLowerCase() === 'load failed') {
+          watchedState.loadingStatus = 'error';
+          watchedState.form.error = 'noconnection';
+          watchedState.form.valid = true;
+        }
       }));
 
     return Promise.all(promisesFeeds)
