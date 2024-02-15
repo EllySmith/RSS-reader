@@ -6,8 +6,10 @@ const validateURL = (url) => {
   return currentUserSchema
     .validate(url)
     .then(() => null)
-    .catch((e) => {
-      throw new Error('Invalid URL');
+    .catch(() => {
+      const customError = new Error();
+      customError.message = 'this must be a valid url';
+      throw customError;
     });
 };
 

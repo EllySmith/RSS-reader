@@ -13,7 +13,6 @@ const fetchData = async (link) => {
     const feed = await parser.parseString(data.contents);
     return feed;
   }
-  throw new Error('Load failed');
 };
 
 export default fetchData;

@@ -113,9 +113,12 @@ const app = () => {
         watchedState.form.valid = true;
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error(error.message.toLowerCase());
 
-        if (error.message === 'Invalid URL') {
+        if (error.message.toLowerCase() === 'load failed') {
+          watchedState.form.error = 'noconnection';
+          watchedState.form.valid = true;
+        } else if (error.message.toLowerCase() === 'this must be a valid url') {
           watchedState.form.error = 'notalink';
           watchedState.form.valid = false;
         } else {
@@ -144,10 +147,8 @@ const app = () => {
           state.feeds[currentFeedIndex].entries = parsedData.entries;
         }
       })
-      .catch(() => {
-        watchedState.form.error = 'noconnection';
-        watchedState.form.valid = true;
-        watchedState.loadingStatus = 'error';
+      .catch((error) => {
+        console.error('Error:', error);
       }));
 
     return Promise.all(promisesFeeds)
