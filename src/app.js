@@ -115,7 +115,7 @@ const app = () => {
       .catch((error) => {
         console.error(error.message.toLowerCase());
 
-        if (error.message.toLowerCase() === 'load failed') {
+        if (error.isAxiosError) {
           watchedState.form.error = 'noconnection';
           watchedState.form.valid = true;
         } else if (error.message.toLowerCase() === 'this must be a valid url') {
