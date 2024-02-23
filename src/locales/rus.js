@@ -5,7 +5,7 @@ export default {
     addRSS: 'Добавить',
     feedlisttitle: 'Список фидов',
     entrieslisttitle: 'Посты',
-    readmore: 'Читать',
+    readmore: 'Просмотр',
     example: 'Пример RSS ссылки: http://example.com/rss/',
     closemodal: 'Закрыть',
     error: {
