@@ -94,6 +94,7 @@ const renderEntries = (state) => {
 
     const entryLinkElement = document.createElement('a');
     entryLinkElement.href = entryLink;
+    entryLink.classList.add('fw-bold');
     entryLinkElement.appendChild(entryTitleElement);
 
     const readMoreButton = document.createElement('button');
