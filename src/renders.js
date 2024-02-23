@@ -86,16 +86,16 @@ const renderEntries = (state) => {
     singleEntryContainer.setAttribute('postId', entryId);
 
     const entryTitleElement = document.createElement('h2');
-    entryTitleElement.textContent = entryTitle;
-    entryTitleElement.classList.add('fw-bold');
-    if (state.viewedPosts.includes(entryId)) {
-      entryTitleElement.classList.add('fw-normal');
-      entryTitleElement.classList.remove('fw-bold');
-    }
     entryTitleElement.classList.add('entry-title');
 
     const entryLinkElement = document.createElement('a');
     entryLinkElement.href = entryLink;
+    entryLinkElement.textContent = entryTitle;
+    entryLinkElement.classList.add('fw-bold');
+    if (state.viewedPosts.includes(entryId)) {
+      entryLinkElement.classList.add('fw-normal');
+      entryLinkElement.classList.remove('fw-bold');
+    }
     entryLinkElement.appendChild(entryTitleElement);
 
     const readMoreButton = document.createElement('button');
