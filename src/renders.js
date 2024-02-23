@@ -116,12 +116,14 @@ const renderModal = (state) => {
   console.log(allEntries);
   const myModal = document.getElementById('modal');
   const readMore = document.querySelector('.full-article');
+  const closeModal = document.querySelector('.btn-close-modal');
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
 
   console.log('shown entry', shownEntry);
   console.log('curent entry id', state.currentEntryId);
   console.log(state.viewedPosts);
-  readMore.textContent = `${i18n.t('readmore')}`;
+  closeModal.textContent = `${i18n.t('closemodal')}`;
+  readMore.textContent = `${i18n.t('readfull')}`;
   readMore.setAttribute('href', shownEntry.link);
   const title = document.querySelector('.modal-title');
   title.textContent = shownEntry.title;
