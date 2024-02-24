@@ -128,11 +128,7 @@ const renderModal = (state) => {
   const title = document.querySelector('.modal-title');
   title.textContent = shownEntry.title;
   const contents = document.querySelector('.modal-body');
-  contents.textContent = shownEntry.content.slice(0, 1000);
-  myModal.classList.add('show');
-  myModal.setAttribute('aria-modal', 'true');
-  myModal.setAttribute('style', 'display: block;');
-  myModal.removeAttribute('aria-hidden');
+  contents.textContent = shownEntry.content;
 };
 
 export {
