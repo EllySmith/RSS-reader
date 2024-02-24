@@ -1,5 +1,4 @@
 import * as yup from 'yup';
-import fetchData from './fetchers';
 
 const validateURL = (url) => {
   const currentUserSchema = yup.string().url().required();

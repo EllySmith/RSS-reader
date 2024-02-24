@@ -114,7 +114,6 @@ const renderEntries = (state) => {
 const renderModal = (state) => {
   const allEntries = state.entries;
   console.log(allEntries);
-  const myModal = document.getElementById('modal');
   const readMore = document.querySelector('.full-article');
   const closeModal = document.querySelector('.btn-close-modal');
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);

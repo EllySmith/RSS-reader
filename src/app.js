@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import onChange from 'on-change';
-import axios from 'axios';
 import rus from './locales/rus.js';
 import {
   renderForm, renderFeeds, renderEntries, renderModal, renderError,
@@ -135,7 +134,7 @@ const app = () => {
 
   render();
 
-  const checkForNewEntries = (state) => {
+  const checkForNewEntries = () => {
     console.log('update');
     const promisesFeeds = state.feedLinks.map((feedLink) => fetchData(feedLink)
       .then((data) => {
