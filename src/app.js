@@ -9,7 +9,7 @@ import {
   validateURL, parseData, chekIfExists,
 } from './utils.js';
 
-async function initializeI18n() {
+const app = async () => {
   await i18n.init({
     lng: 'ru',
     resources: {
@@ -18,10 +18,7 @@ async function initializeI18n() {
       },
     },
   });
-}
-await initializeI18n();
 
-const app = () => {
   const elements = {
     form: document.querySelector('form'),
     submitButton: document.querySelector('add-button'),
