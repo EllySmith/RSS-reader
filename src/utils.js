@@ -12,6 +12,18 @@ const validateURL = (url) => {
     });
 };
 
+const chekIfExists = (url, collection) => {
+  const repeatSchema = yup.string().notOneOf(collection);
+  return repeatSchema
+    .validate(url)
+    .then(() => null)
+    .catch(() => {
+      const customError = new Error();
+      customError.message = 'this url exists';
+      throw customError;
+    });
+};
+
 const parseData = (data) => {
   const {
     link, title, description, items,
@@ -27,4 +39,4 @@ const parseData = (data) => {
   return newEntry;
 };
 
-export { validateURL, parseData };
+export { validateURL, chekIfExists, parseData };

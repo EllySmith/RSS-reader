@@ -110,10 +110,7 @@ const renderEntries = (state) => {
 const renderModal = (state) => {
   const allEntries = state.entries;
   const readMore = document.querySelector('.full-article');
-  const closeModal = document.querySelector('.btn-close-modal');
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
-  closeModal.textContent = `${i18n.t('closemodal')}`;
-  readMore.textContent = `${i18n.t('readfull')}`;
   readMore.setAttribute('href', shownEntry.link);
   const title = document.querySelector('.modal-title');
   title.textContent = shownEntry.title;

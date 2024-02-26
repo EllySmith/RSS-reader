@@ -6,24 +6,11 @@ import {
 } from './renders.js';
 import fetchData from './fetchers.js';
 import {
-  validateURL, parseData,
+  validateURL, parseData, chekIfExists,
 } from './utils.js';
 
-const app = () => {
-  const state = {
-    feeds: [],
-    feedLinks: [],
-    entries: [],
-    currentEntryId: null,
-    viewedPosts: [],
-    loadingStatus: 'success',
-    form: {
-      error: 'none',
-      valid: true,
-    },
-  };
-
-  i18n.init({
+async function initializeI18n() {
+  await i18n.init({
     lng: 'ru',
     resources: {
       ru: {
@@ -31,6 +18,22 @@ const app = () => {
       },
     },
   });
+}
+await initializeI18n();
+
+const app = () => {
+  const state = {
+    feeds: [],
+    feedLinks: [],
+    entries: [],
+    currentEntryId: '0',
+    viewedPosts: [],
+    loadingStatus: 'success',
+    form: {
+      error: 'none',
+      valid: true,
+    },
+  };
 
   const watchedState = onChange(state, (path) => {
     switch (path) {
@@ -77,15 +80,10 @@ const app = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const rssLink = formData.get('url');
-    if (state.feedLinks.includes(rssLink)) {
-      watchedState.form.error = 'exists';
-      watchedState.form.valid = true;
-      watchedState.loadingStatus = 'error';
-      return;
-    }
     watchedState.loadingStatus = 'loading';
 
     validateURL(rssLink)
+      .then(() => chekIfExists(rssLink, state.feedLinks))
       .then(() => fetchData(rssLink))
       .then((data) => {
         const newFeed = parseData(data);
@@ -104,12 +102,16 @@ const app = () => {
         } else if (error.message.toLowerCase() === 'this must be a valid url') {
           watchedState.form.error = 'notalink';
           watchedState.form.valid = false;
+        } else if (error.message.toLowerCase() === 'this url exists') {
+          watchedState.form.error = 'exists';
+          watchedState.form.valid = true;
         } else {
           watchedState.form.error = 'notanrss';
           watchedState.form.valid = true;
         }
 
         watchedState.loadingStatus = 'error';
+        throw error;
       });
   };
 
