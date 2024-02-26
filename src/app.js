@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import onChange from 'on-change';
+import { random } from 'lodash';
 import rus from './locales/rus.js';
 import {
   renderForm, renderFeeds, renderEntries, renderModal, renderError,
@@ -21,10 +22,10 @@ const app = async () => {
 
   const elements = {
     form: document.querySelector('form'),
-    submitButton: document.querySelector('add-button'),
+    submitButton: document.querySelector('#add-button'),
     exampleMessage: document.getElementById('example'),
     header: document.getElementById('rss-header'),
-    errorMessage: document.getElementById('error-message'),
+    errorMessage: document.querySelector('#error-message'),
     feedback: document.querySelector('.feedback'),
     input: document.querySelector('#url-input'),
     submit: document.querySelector('[type="submit"]'),
@@ -42,7 +43,7 @@ const app = async () => {
     feeds: [],
     feedLinks: [],
     entries: [],
-    currentEntryId: '0',
+    currentEntryId: null,
     viewedPosts: [],
     loadingStatus: 'success',
     form: {
@@ -51,7 +52,7 @@ const app = async () => {
     },
   };
 
-  const watchedState = onChange(state, elements, (path) => {
+  const watchedState = onChange(state, (path) => {
     switch (path) {
       case 'form.error':
         renderError(state, elements);
@@ -102,10 +103,14 @@ const app = async () => {
       .then(() => fetchData(rssLink))
       .then((data) => {
         const newFeed = parseData(data);
+        const modifiedEntries = newFeed.entries.map((entry) => ({
+          ...entry,
+          guid: String(random(1000000, 9999999)),
+        }));
         watchedState.feeds = [...state.feeds, newFeed];
-        watchedState.entries = [...state.entries, ...newFeed.entries];
+        watchedState.entries = [...modifiedEntries, ...newFeed.entries];
         watchedState.feedLinks = [...state.feedLinks, rssLink];
-        watchedState.currentEntryId = '0';
+        watchedState.currentEntryId = null;
         watchedState.loadingStatus = 'success';
         watchedState.form.error = 'rssloaded';
         watchedState.form.valid = true;

@@ -1,11 +1,9 @@
 import i18n from 'i18next';
 import 'bootstrap';
 
-const generateRandomId = () => Math.random().toString(36).substring(2, 15);
-
 const renderForm = (state, elements) => {
   const {
-    input, submitButton, exampleMessage, header
+    input, submitButton, exampleMessage, header,
   } = elements;
   input.textContent = `${i18n.t('placeholder')}`;
   submitButton.textContent = `${i18n.t('addRSS')}`;
@@ -31,6 +29,7 @@ const renderError = (state, elements) => {
   } else {
     errorMessage.classList.add('text-danger');
   }
+  errorMessage.textContent = `${i18n.t(`error.${state.form.error}`)}`;
 };
 
 const renderFeeds = (state, elements) => {
@@ -68,8 +67,7 @@ const renderEntries = (state, elements) => {
   allEntries.forEach((entry) => {
     const entryLink = entry?.link ?? '';
     const entryTitle = entry?.title ?? '';
-    const newId = entry?.guid || generateRandomId();
-    const entryId = newId;
+    const entryId = entry.guid;
 
     const singleEntryContainer = document.createElement('div');
     singleEntryContainer.classList.add('entry-container');
@@ -102,12 +100,14 @@ const renderEntries = (state, elements) => {
 };
 
 const renderModal = (state, elements) => {
-  const allEntries = state.entries;
-  const { readMore, modalTitle, modalBody } = elements;
-  const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
-  readMore.setAttribute('href', shownEntry.link);
-  modalTitle.textContent = shownEntry.title;
-  modalBody.textContent = shownEntry.content;
+  if (state.currentEntryId !== null) {
+    const allEntries = state.entries;
+    const { readMore, modalTitle, modalBody } = elements;
+    const shownEntry = allEntries.find((entry) => entry.guid === state.currentEntryId);
+    readMore.setAttribute('href', shownEntry.link);
+    modalTitle.textContent = shownEntry.title;
+    modalBody.textContent = shownEntry.content;
+  }
 };
 
 export {
