@@ -3,23 +3,20 @@ import 'bootstrap';
 
 const generateRandomId = () => Math.random().toString(36).substring(2, 15);
 
-const renderForm = (state) => {
-  const placeholder = document.querySelector('label[for="url-input"]');
-  placeholder.textContent = `${i18n.t('placeholder')}`;
-  const button = document.getElementById('add-button');
-  button.textContent = `${i18n.t('addRSS')}`;
-  const exampleMessage = document.getElementById('example');
+const renderForm = (state, elements) => {
+  const {
+    input, submitButton, exampleMessage, header
+  } = elements;
+  input.textContent = `${i18n.t('placeholder')}`;
+  submitButton.textContent = `${i18n.t('addRSS')}`;
   exampleMessage.textContent = `${i18n.t('example')}`;
-  const header = document.getElementById('rss-header');
   header.textContent = `${i18n.t('title')}`;
-  const field = document.getElementById('url-input');
-  field.classList.remove('invalid');
+  input.classList.remove('invalid');
   if (!state.form.valid) {
-    field.classList.add('invalid');
+    input.classList.add('invalid');
   }
-  field.value = '';
-  field.focus();
-  const submitButton = document.querySelector('button[type="submit"]');
+  input.value = '';
+  input.focus();
   if (state.loadingStatus === 'loading') {
     submitButton.disabled = true;
   } else {
@@ -27,9 +24,8 @@ const renderForm = (state) => {
   }
 };
 
-const renderError = (state) => {
-  const errorMessage = document.getElementById('error-message');
-  errorMessage.textContent = `${i18n.t(`error.${state.form.error}`)}`;
+const renderError = (state, elements) => {
+  const { errorMessage } = elements;
   if (state.loadingStatus === 'success') {
     errorMessage.classList.remove('text-danger');
   } else {
@@ -37,10 +33,9 @@ const renderError = (state) => {
   }
 };
 
-const renderFeeds = (state) => {
-  const feedsContainer = document.querySelector('#feeds');
+const renderFeeds = (state, elements) => {
+  const { feedsContainer, feedListTitle } = elements;
   feedsContainer.textContent = '';
-  const feedListTitle = document.createElement('h2');
   feedListTitle.classList.add('feed-list-title');
   feedListTitle.textContent = `${i18n.t('feedlisttitle')}`;
   feedsContainer.prepend(feedListTitle);
@@ -61,9 +56,8 @@ const renderFeeds = (state) => {
   });
 };
 
-const renderEntries = (state) => {
-  const postsContainer = document.getElementById('posts');
-  const entriesListTitle = document.createElement('h2');
+const renderEntries = (state, elements) => {
+  const { postsContainer, entriesListTitle } = elements;
   entriesListTitle.classList.add('entries-list-title');
   entriesListTitle.textContent = i18n.t('entrieslisttitle');
   postsContainer.textContent = '';
@@ -107,15 +101,13 @@ const renderEntries = (state) => {
   });
 };
 
-const renderModal = (state) => {
+const renderModal = (state, elements) => {
   const allEntries = state.entries;
-  const readMore = document.querySelector('.full-article');
+  const { readMore, modalTitle, modalBody } = elements;
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
   readMore.setAttribute('href', shownEntry.link);
-  const title = document.querySelector('.modal-title');
-  title.textContent = shownEntry.title;
-  const contents = document.querySelector('.modal-body');
-  contents.textContent = shownEntry.content;
+  modalTitle.textContent = shownEntry.title;
+  modalBody.textContent = shownEntry.content;
 };
 
 export {

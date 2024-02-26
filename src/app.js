@@ -22,6 +22,25 @@ async function initializeI18n() {
 await initializeI18n();
 
 const app = () => {
+  const elements = {
+    form: document.querySelector('form'),
+    submitButton: document.querySelector('add-button'),
+    exampleMessage: document.getElementById('example'),
+    header: document.getElementById('rss-header'),
+    errorMessage: document.getElementById('error-message'),
+    feedback: document.querySelector('.feedback'),
+    input: document.querySelector('#url-input'),
+    submit: document.querySelector('[type="submit"]'),
+    postsContainer: document.querySelector('.posts'),
+    entriesListTitle: document.createElement('h2'),
+    feedsContainer: document.querySelector('.feeds'),
+    feedListTitle: document.createElement('h2'),
+    modal: document.querySelector('.modal'),
+    readMore: document.querySelector('.full-article'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
+  };
+
   const state = {
     feeds: [],
     feedLinks: [],
@@ -35,26 +54,26 @@ const app = () => {
     },
   };
 
-  const watchedState = onChange(state, (path) => {
+  const watchedState = onChange(state, elements, (path) => {
     switch (path) {
       case 'form.error':
-        renderError(state);
+        renderError(state, elements);
         break;
       case 'entries':
-        renderEntries(state);
+        renderEntries(state, elements);
         break;
       case 'feeds':
-        renderFeeds(state);
+        renderFeeds(state, elements);
         break;
       case 'viewedPosts':
-        renderEntries(state);
+        renderEntries(state, elements);
         break;
       case 'currentEntryId':
-        renderModal(state);
+        renderModal(state, elements);
         break;
       case 'loadingStatus':
-        renderForm(state);
-        renderError(state);
+        renderForm(state, elements);
+        renderError(state, elements);
         break;
       default:
         break;
@@ -62,11 +81,10 @@ const app = () => {
   });
 
   const render = () => {
-    renderForm(state);
+    renderForm(state, elements);
   };
 
-  const postsContainer = document.getElementById('posts');
-  postsContainer.addEventListener('click', (e) => {
+  elements.postsContainer.addEventListener('click', (e) => {
     if (!e.target.dataset.id) {
       return;
     }
@@ -115,8 +133,7 @@ const app = () => {
       });
   };
 
-  const form = document.getElementById('input-form');
-  form.addEventListener('submit', handleSubmit);
+  elements.form.addEventListener('submit', handleSubmit);
 
   render();
 
