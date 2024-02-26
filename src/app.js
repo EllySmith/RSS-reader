@@ -14,7 +14,7 @@ const app = () => {
     feeds: [],
     feedLinks: [],
     entries: [],
-    currentEntryId: '0',
+    currentEntryId: null,
     viewedPosts: [],
     loadingStatus: 'success',
     form: {
@@ -36,28 +36,22 @@ const app = () => {
     switch (path) {
       case 'form.error':
         renderError(state);
-        console.log(state);
         break;
       case 'entries':
         renderEntries(state);
-        console.log(state);
         break;
       case 'feeds':
         renderFeeds(state);
-        console.log(state);
         break;
       case 'viewedPosts':
         renderEntries(state);
-        console.log(state);
         break;
       case 'currentEntryId':
         renderModal(state);
-        console.log(state);
         break;
       case 'loadingStatus':
         renderForm(state);
         renderError(state);
-        console.log(state);
         break;
       default:
         break;
@@ -66,14 +60,6 @@ const app = () => {
 
   const render = () => {
     renderForm(state);
-    renderError(state);
-    if (state.feeds.length > 0) {
-      renderFeeds(state);
-      renderEntries(state);
-    }
-    if (state.currentEntryId !== '0') {
-      renderModal(state);
-    }
   };
 
   const postsContainer = document.getElementById('posts');
@@ -112,8 +98,6 @@ const app = () => {
         watchedState.form.valid = true;
       })
       .catch((error) => {
-        console.error(error.message.toLowerCase());
-
         if (error.isAxiosError) {
           watchedState.form.error = 'noconnection';
           watchedState.form.valid = true;
@@ -135,7 +119,6 @@ const app = () => {
   render();
 
   const checkForNewEntries = () => {
-    console.log('update');
     const promisesFeeds = state.feedLinks.map((feedLink) => fetchData(feedLink)
       .then((data) => {
         const parsedData = parseData(data);
@@ -147,15 +130,11 @@ const app = () => {
         }
       })
       .catch((error) => {
-        if (error.message.toLowerCase() === 'load failed') {
-          watchedState.loadingStatus = 'error';
-          watchedState.form.error = 'noconnection';
-          watchedState.form.valid = true;
-        }
+        throw error;
       }));
 
     return Promise.all(promisesFeeds)
-      .finally(() => setTimeout(() => checkForNewEntries(state), 3000));
+      .finally(() => setTimeout(() => checkForNewEntries(state), 5000));
   };
 
   checkForNewEntries(state);

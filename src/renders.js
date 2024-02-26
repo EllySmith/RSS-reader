@@ -4,7 +4,6 @@ import 'bootstrap';
 const generateRandomId = () => Math.random().toString(36).substring(2, 15);
 
 const renderForm = (state) => {
-  console.log('form rendering');
   const placeholder = document.querySelector('label[for="url-input"]');
   placeholder.textContent = `${i18n.t('placeholder')}`;
   const button = document.getElementById('add-button');
@@ -29,7 +28,6 @@ const renderForm = (state) => {
 };
 
 const renderError = (state) => {
-  console.log('error rendering', state.form.error);
   const errorMessage = document.getElementById('error-message');
   errorMessage.textContent = `${i18n.t(`error.${state.form.error}`)}`;
   if (state.loadingStatus === 'success') {
@@ -40,9 +38,8 @@ const renderError = (state) => {
 };
 
 const renderFeeds = (state) => {
-  console.log('feeds rendering');
   const feedsContainer = document.querySelector('#feeds');
-  feedsContainer.innerHTML = '';
+  feedsContainer.textContent = '';
   const feedListTitle = document.createElement('h2');
   feedListTitle.classList.add('feed-list-title');
   feedListTitle.textContent = `${i18n.t('feedlisttitle')}`;
@@ -65,12 +62,11 @@ const renderFeeds = (state) => {
 };
 
 const renderEntries = (state) => {
-  console.log('entries rendering');
   const postsContainer = document.getElementById('posts');
   const entriesListTitle = document.createElement('h2');
   entriesListTitle.classList.add('entries-list-title');
   entriesListTitle.textContent = i18n.t('entrieslisttitle');
-  postsContainer.innerHTML = '';
+  postsContainer.textContent = '';
   postsContainer.appendChild(entriesListTitle);
 
   const allEntries = state.entries;
@@ -113,14 +109,9 @@ const renderEntries = (state) => {
 
 const renderModal = (state) => {
   const allEntries = state.entries;
-  console.log(allEntries);
   const readMore = document.querySelector('.full-article');
   const closeModal = document.querySelector('.btn-close-modal');
   const shownEntry = allEntries.find((obj) => obj.guid === `${state.currentEntryId}`);
-
-  console.log('shown entry', shownEntry);
-  console.log('curent entry id', state.currentEntryId);
-  console.log(state.viewedPosts);
   closeModal.textContent = `${i18n.t('closemodal')}`;
   readMore.textContent = `${i18n.t('readfull')}`;
   readMore.setAttribute('href', shownEntry.link);
