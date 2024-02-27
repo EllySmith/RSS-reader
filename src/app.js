@@ -7,7 +7,7 @@ import {
 } from './renders.js';
 import fetchData from './fetchers.js';
 import {
-  validateURL, parseData, chekIfExists,
+  validateURL, parseData,
 } from './utils.js';
 
 const app = async () => {
@@ -98,8 +98,7 @@ const app = async () => {
     const rssLink = formData.get('url');
     watchedState.loadingStatus = 'loading';
 
-    validateURL(rssLink)
-      .then(() => chekIfExists(rssLink, state.feedLinks))
+    validateURL(rssLink, state.feedLinks)
       .then(() => fetchData(rssLink))
       .then((data) => {
         const newFeed = parseData(data);
@@ -114,15 +113,17 @@ const app = async () => {
         watchedState.loadingStatus = 'success';
         watchedState.form.error = 'rssloaded';
         watchedState.form.valid = true;
+        console.log(state);
       })
       .catch((error) => {
+        const message = error.message.toString();
         if (error.isAxiosError) {
           watchedState.form.error = 'noconnection';
           watchedState.form.valid = true;
-        } else if (error.message.toLowerCase() === 'this must be a valid url') {
+        } else if (message === 'not a link') {
           watchedState.form.error = 'notalink';
           watchedState.form.valid = false;
-        } else if (error.message.toLowerCase() === 'this url exists') {
+        } else if (message === 'already exists') {
           watchedState.form.error = 'exists';
           watchedState.form.valid = true;
         } else {
@@ -131,7 +132,6 @@ const app = async () => {
         }
 
         watchedState.loadingStatus = 'error';
-        throw error;
       });
   };
 
