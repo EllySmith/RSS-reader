@@ -2,7 +2,7 @@ import Parser from 'rss-parser';
 import axios from 'axios';
 
 const addProxy = (url) => {
-  const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app'); 
+  const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app');
   urlWithProxy.searchParams.set('url', url);
   urlWithProxy.searchParams.set('disableCache', 'true');
   return urlWithProxy.toString();
