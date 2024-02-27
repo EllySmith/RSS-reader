@@ -117,18 +117,16 @@ const app = async () => {
       })
       .catch((error) => {
         const message = error.message.toString();
+        watchedState.form.valid = true;
         if (error.isAxiosError) {
           watchedState.form.error = 'noconnection';
-          watchedState.form.valid = true;
         } else if (message === 'not a link') {
           watchedState.form.error = 'notalink';
           watchedState.form.valid = false;
         } else if (message === 'already exists') {
           watchedState.form.error = 'exists';
-          watchedState.form.valid = true;
         } else {
           watchedState.form.error = 'notanrss';
-          watchedState.form.valid = true;
         }
 
         watchedState.loadingStatus = 'error';
