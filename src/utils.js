@@ -4,18 +4,17 @@ const validateURL = (link, collection) => {
   yup.setLocale({
     mixed: {
       default: 'input not valid',
+      notOneOf: 'already exists',
     },
     string: {
       url: 'not a link',
-      notOneOf: 'already exists',
     },
   });
 
-  const schemaStr = yup.string().required().url();
-  const schemaMix = yup.mixed().notOneOf([collection]);
+  const schemaStr = yup.string().required().url().notOneOf(collection);
   return schemaStr
     .validate(link)
-    .then((url) => schemaMix.validate(url))
+    .then(() => null)
     .catch((e) => {
       throw new Error(e.message);
     });

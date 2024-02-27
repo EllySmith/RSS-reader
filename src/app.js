@@ -107,7 +107,7 @@ const app = async () => {
           guid: String(random(1000000, 9999999)),
         }));
         watchedState.feeds = [...state.feeds, newFeed];
-        watchedState.entries = [...modifiedEntries, ...newFeed.entries];
+        watchedState.entries = [...modifiedEntries, ...state.entries];
         watchedState.feedLinks = [...state.feedLinks, rssLink];
         watchedState.currentEntryId = null;
         watchedState.loadingStatus = 'success';
